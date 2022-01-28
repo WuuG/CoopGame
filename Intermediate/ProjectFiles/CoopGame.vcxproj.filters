@@ -3,7 +3,7 @@
   <ItemGroup>
     <None Include="..\..\CoopGame.uproject" />
     <Filter Include="Source">
-      <UniqueIdentifier>{65B7E542-645F-4E7C-8502-1A3BAF4FCC8E}</UniqueIdentifier>
+      <UniqueIdentifier>{ECCAA6B2-A5BC-46C9-84F8-FBEA50D80E79}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Source\CoopGame.Target.cs">
       <Filter>Source</Filter>
@@ -11,8 +11,10 @@
     <None Include="..\..\Source\CoopGameEditor.Target.cs">
       <Filter>Source</Filter>
     </None>
+    <None Include="..\..\.gitattributes" />
+    <None Include="..\..\.gitignore" />
     <Filter Include="Config">
-      <UniqueIdentifier>{38D39785-E418-4933-B755-5038D1FF210A}</UniqueIdentifier>
+      <UniqueIdentifier>{1ED05057-B05B-49AE-A29D-4FCB2964F825}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Config\DefaultEditor.ini">
       <Filter>Config</Filter>
@@ -24,7 +26,7 @@
       <Filter>Config</Filter>
     </None>
     <Filter Include="Source\CoopGame">
-      <UniqueIdentifier>{F4B2C62C-030F-4872-9BAC-988FA9D13A97}</UniqueIdentifier>
+      <UniqueIdentifier>{75B849E4-98D2-4F94-9D1C-447FDBE8A011}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Source\CoopGame\CoopGame.Build.cs">
       <Filter>Source\CoopGame</Filter>
@@ -40,6 +42,18 @@
     </ClCompile>
     <ClInclude Include="..\..\Source\CoopGame\CoopGameGameModeBase.h">
       <Filter>Source\CoopGame</Filter>
+    </ClInclude>
+    <Filter Include="Source\CoopGame\Private">
+      <UniqueIdentifier>{A879E780-CDE9-4C98-943A-0CBECE2F5DC1}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\CoopGame\Private\SCharacter.cpp">
+      <Filter>Source\CoopGame\Private</Filter>
+    </ClCompile>
+    <Filter Include="Source\CoopGame\Public">
+      <UniqueIdentifier>{0F042318-D24E-4A27-89B1-786DBF5C981F}</UniqueIdentifier>
+    </Filter>
+    <ClInclude Include="..\..\Source\CoopGame\Public\SCharacter.h">
+      <Filter>Source\CoopGame\Public</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

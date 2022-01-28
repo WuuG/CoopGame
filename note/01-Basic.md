@@ -14,7 +14,7 @@
 ### 添加第三人称视角摄像机
 + UCameraComponent 组件, VisibleAnywhere, BlueprintReadOnly
 + 头文件 Camera/CameraComponent.h
-+ CamraComp->bUsePawnControlRotation = true, 设置摄像头随着人物视角移动进行旋转(但此时只能在水平方向上进行旋转 Yaw)
++ CamraComp->bUsePawnControlRotation = true, 设置摄像头随着人物视角移动进行旋转(但此时只能在水平方向上进行旋转 Yaw), 通过~ show Collision, 可以在play Mode下查看到碰撞，需要注意的是要打全，他的默认提示不会自己填写上去的
 + 添加SPrintArmComponent， 为了让摄像头能够在竖直方向上(Pitch)随着视角移动
 + 将其添加到RootComponent上
 + Ctrl+shift+O 可以查看头文件位置
