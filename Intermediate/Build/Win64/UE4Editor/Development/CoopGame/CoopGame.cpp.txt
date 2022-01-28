@@ -1,0 +1,2 @@
+D:\UEProjects\CoopGame\Intermediate\Build\Win64\UE4Editor\Development\CoopGame\Definitions.CoopGame.h
+D:\UEProjects\CoopGame\Source\CoopGame\CoopGame.h
