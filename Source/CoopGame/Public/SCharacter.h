@@ -31,6 +31,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
 	USpringArmComponent* SprintArmComp;
 
+	void BeginCrouch();
+	void EndCrouch();
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

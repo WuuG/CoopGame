@@ -4,6 +4,7 @@
 #include "SCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "GameFramework/PawnMovementComponent.h"
 
 // Sets default values
 ASCharacter::ASCharacter()
@@ -12,7 +13,7 @@ ASCharacter::ASCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 
 
-	// ÕâÀïµÄTEXTÄÚÈİËÆºõÊÇÎªÁË±êÖ¾×é¼ş£¬ËùÒÔÄÚÈİÊÇ²»ÄÜÏàÍ¬µÄ
+	// è®¾ç½®è§†è§’ç»„ä»¶ï¼Œ å¹¶è·Ÿéšäººç‰©æ—‹è½¬
 	SprintArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("SprintArmComp"));
 	SprintArmComp->bUsePawnControlRotation = true;
 	SprintArmComp->SetupAttachment(RootComponent);
@@ -20,6 +21,7 @@ ASCharacter::ASCharacter()
 	CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComp"));
 	CameraComp->SetupAttachment(SprintArmComp);
 
+	GetMovementComponent()->GetNavAgentPropertiesRef().bCanCrouch = true;
 }
 
 // Called when the game starts or when spawned
@@ -39,6 +41,16 @@ void ASCharacter::MoveRight(float Value)
 	AddMovementInput(GetActorRightVector() * Value);
 }
 
+void ASCharacter::BeginCrouch()
+{
+	ASCharacter::Crouch();
+}
+
+void ASCharacter::EndCrouch()
+{
+	ASCharacter::UnCrouch();
+}
+
 // Called every frame
 void ASCharacter::Tick(float DeltaTime)
 {
@@ -50,9 +62,15 @@ void ASCharacter::Tick(float DeltaTime)
 void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	// bind Move KeyBoard
 	PlayerInputComponent->BindAxis("MoveForward", this, &ASCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &ASCharacter::MoveRight);
 	PlayerInputComponent->BindAxis("Pitch", this, &ASCharacter::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("Turn", this, &ASCharacter::AddControllerYawInput);
+	
+	// bind action
+	PlayerInputComponent->BindAction("Crouch", IE_Pressed, this, &ASCharacter::BeginCrouch);
+	PlayerInputComponent->BindAction("Crouch", IE_Released, this, &ASCharacter::EndCrouch);
+	PlayerInputComponent->BindAction("Jump",IE_Pressed, this, &ASCharacter::Jump);
 }
 

@@ -11,3 +11,11 @@ D:\Program Files\UE\UE_4.26\Engine\Source\Runtime\Engine\Classes\Camera/CameraCo
 D:\Program Files\UE\UE_4.26\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\CameraComponent.generated.h
 D:\Program Files\UE\UE_4.26\Engine\Source\Runtime\Engine\Classes\GameFramework/SpringArmComponent.h
 D:\Program Files\UE\UE_4.26\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\SpringArmComponent.generated.h
+D:\Program Files\UE\UE_4.26\Engine\Source\Runtime\Engine\Classes\GameFramework/PawnMovementComponent.h
+D:\Program Files\UE\UE_4.26\Engine\Source\Runtime\Engine\Classes\GameFramework/NavMovementComponent.h
+D:\Program Files\UE\UE_4.26\Engine\Source\Runtime\Engine\Classes\AI/Navigation/PathFollowingAgentInterface.h
+D:\Program Files\UE\UE_4.26\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\PathFollowingAgentInterface.generated.h
+D:\Program Files\UE\UE_4.26\Engine\Source\Runtime\Engine\Classes\GameFramework/MovementComponent.h
+D:\Program Files\UE\UE_4.26\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\MovementComponent.generated.h
+D:\Program Files\UE\UE_4.26\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\NavMovementComponent.generated.h
+D:\Program Files\UE\UE_4.26\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\PawnMovementComponent.generated.h

@@ -19,4 +19,17 @@
 + 将其添加到RootComponent上
 + Ctrl+shift+O 可以查看头文件位置
 + 使用 SprintArmComp->bUsePawnControlRotation = true, 删除之前Camera设置的该项
-### 添加新手动画
+## 添加新手动画
++ 在Epic商城中添加初学者动作包，并将包含的Mesh添加到人物之上。
+### 添加蹲伏动作
++ 创建BeginCrouch和EndCrouch两个函数
++ 利用引擎内置的Crounch和Uncrounch函数来实现蹲伏
++ 通过BindAction("Counch", IE_Pressed, ...)来进行绑定
++ 同理使用BindAction("Counch", IE_Released, ...)绑定取消蹲伏
++ 为了使用蹲伏，需要设置 GetMovementComponent()->GetNavAgentPropertiesRef().bCanCrouch = true
++ 添加ActionMap。 将Crouch绑定按键
+### 设置动画效果
++ 基本上使用自带的动作蓝图
++  添加跳跃动作:类似添加蹲伏动作
+## 武器
+### 添加武器
