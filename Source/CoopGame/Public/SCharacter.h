@@ -8,6 +8,7 @@
 
 class UCameraComponent;
 class USpringArmComponent;
+class UCharacterMovementComponent;
 
 UCLASS()
 class COOPGAME_API ASCharacter : public ACharacter
@@ -25,14 +26,27 @@ protected:
 	void MoveForward(float Value);
 	void MoveRight(float Value);
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
-	UCameraComponent* CameraComp;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Components")
+	UCameraComponent* ThirdViewCameraComp;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
 	USpringArmComponent* SprintArmComp;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
+	UCameraComponent* FirstViewCameraComp;
+
 	void BeginCrouch();
 	void EndCrouch();
+
+	UCharacterMovementComponent* CharacterMovementComp;
+	void BeginRun();
+	void EndRun();
+	float WalkSpeed;
+	float RunSpeed;
+
+
+	UCameraComponent* CurrentViewCameraComp;
+	void SwitchViewFromTwoCamera();
 
 public:	
 	// Called every frame

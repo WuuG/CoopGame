@@ -5,6 +5,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/PawnMovementComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 ASCharacter::ASCharacter()
@@ -18,17 +19,30 @@ ASCharacter::ASCharacter()
 	SprintArmComp->bUsePawnControlRotation = true;
 	SprintArmComp->SetupAttachment(RootComponent);
 
-	CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComp"));
-	CameraComp->SetupAttachment(SprintArmComp);
+	ThirdViewCameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("ThiredViewCameraComp"));
+	ThirdViewCameraComp->SetupAttachment(SprintArmComp);
 
+	FirstViewCameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstViewCameraComp"));
+//	FirstViewCameraComp->bUsePawnControlRotation = true;
+	FirstViewCameraComp->SetupAttachment(RootComponent);
+
+	CurrentViewCameraComp = ThirdViewCameraComp;
+
+	// enable courch
 	GetMovementComponent()->GetNavAgentPropertiesRef().bCanCrouch = true;
+	
+	// Run Action
+	CharacterMovementComp = GetCharacterMovement();
+	WalkSpeed = 300.0f;
+	RunSpeed = 600.0f;
+
 }
 
 // Called when the game starts or when spawned
 void ASCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 void ASCharacter::MoveForward(float Value)
@@ -49,6 +63,34 @@ void ASCharacter::BeginCrouch()
 void ASCharacter::EndCrouch()
 {
 	ASCharacter::UnCrouch();
+}
+
+void ASCharacter::BeginRun()
+{
+	CharacterMovementComp->MaxWalkSpeed = RunSpeed;
+}
+
+void ASCharacter::EndRun()
+{
+	CharacterMovementComp->MaxWalkSpeed = WalkSpeed;
+}
+
+
+
+void ASCharacter::SwitchViewFromTwoCamera()
+{
+	if (CurrentViewCameraComp == ThirdViewCameraComp)
+	{
+		CurrentViewCameraComp = FirstViewCameraComp;
+		ThirdViewCameraComp->Deactivate();
+		FirstViewCameraComp->Activate();
+	}
+	else
+	{
+		CurrentViewCameraComp = ThirdViewCameraComp;
+		FirstViewCameraComp->Deactivate();
+		ThirdViewCameraComp->Activate();
+	}
 }
 
 // Called every frame
@@ -72,5 +114,8 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAction("Crouch", IE_Pressed, this, &ASCharacter::BeginCrouch);
 	PlayerInputComponent->BindAction("Crouch", IE_Released, this, &ASCharacter::EndCrouch);
 	PlayerInputComponent->BindAction("Jump",IE_Pressed, this, &ASCharacter::Jump);
+	PlayerInputComponent->BindAction("Run", IE_Pressed, this, &ASCharacter::BeginRun);
+	PlayerInputComponent->BindAction("Run", IE_Released, this, &ASCharacter::EndRun);
+	PlayerInputComponent->BindAction("SwitchView", IE_Pressed, this, &ASCharacter::SwitchViewFromTwoCamera);
 }
 

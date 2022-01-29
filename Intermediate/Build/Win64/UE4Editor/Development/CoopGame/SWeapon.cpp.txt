@@ -1,0 +1,3 @@
+D:\UEProjects\CoopGame\Intermediate\Build\Win64\UE4Editor\Development\CoopGame\Definitions.CoopGame.h
+D:\UEProjects\CoopGame\Source\CoopGame\Public\SWeapon.h
+D:\UEProjects\CoopGame\Intermediate\Build\Win64\UE4Editor\Inc\CoopGame\SWeapon.generated.h

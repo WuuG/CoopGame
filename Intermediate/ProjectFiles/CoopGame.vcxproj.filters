@@ -3,7 +3,7 @@
   <ItemGroup>
     <None Include="..\..\CoopGame.uproject" />
     <Filter Include="Source">
-      <UniqueIdentifier>{ECCAA6B2-A5BC-46C9-84F8-FBEA50D80E79}</UniqueIdentifier>
+      <UniqueIdentifier>{A55E805D-1AF2-4314-8A80-32324DE3D5F2}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Source\CoopGame.Target.cs">
       <Filter>Source</Filter>
@@ -14,7 +14,7 @@
     <None Include="..\..\.gitattributes" />
     <None Include="..\..\.gitignore" />
     <Filter Include="Config">
-      <UniqueIdentifier>{1ED05057-B05B-49AE-A29D-4FCB2964F825}</UniqueIdentifier>
+      <UniqueIdentifier>{B250B99E-9B29-405C-B160-7C7B68859FF6}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Config\DefaultEditor.ini">
       <Filter>Config</Filter>
@@ -25,8 +25,11 @@
     <None Include="..\..\Config\DefaultGame.ini">
       <Filter>Config</Filter>
     </None>
+    <None Include="..\..\Config\DefaultInput.ini">
+      <Filter>Config</Filter>
+    </None>
     <Filter Include="Source\CoopGame">
-      <UniqueIdentifier>{75B849E4-98D2-4F94-9D1C-447FDBE8A011}</UniqueIdentifier>
+      <UniqueIdentifier>{795BC462-8A1C-42C4-B509-BE4D045574F7}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Source\CoopGame\CoopGame.Build.cs">
       <Filter>Source\CoopGame</Filter>
@@ -44,15 +47,21 @@
       <Filter>Source\CoopGame</Filter>
     </ClInclude>
     <Filter Include="Source\CoopGame\Private">
-      <UniqueIdentifier>{A879E780-CDE9-4C98-943A-0CBECE2F5DC1}</UniqueIdentifier>
+      <UniqueIdentifier>{EEC9BB77-B411-4D44-9CFC-C67884C33431}</UniqueIdentifier>
     </Filter>
     <ClCompile Include="..\..\Source\CoopGame\Private\SCharacter.cpp">
       <Filter>Source\CoopGame\Private</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\CoopGame\Private\SWeapon.cpp">
+      <Filter>Source\CoopGame\Private</Filter>
+    </ClCompile>
     <Filter Include="Source\CoopGame\Public">
-      <UniqueIdentifier>{0F042318-D24E-4A27-89B1-786DBF5C981F}</UniqueIdentifier>
+      <UniqueIdentifier>{2D5685DC-DC79-411B-AF71-17D99D1EF2D1}</UniqueIdentifier>
     </Filter>
     <ClInclude Include="..\..\Source\CoopGame\Public\SCharacter.h">
+      <Filter>Source\CoopGame\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\CoopGame\Public\SWeapon.h">
       <Filter>Source\CoopGame\Public</Filter>
     </ClInclude>
   </ItemGroup>
