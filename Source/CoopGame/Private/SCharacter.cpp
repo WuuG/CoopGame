@@ -23,7 +23,7 @@ ASCharacter::ASCharacter()
 	ThirdViewCameraComp->SetupAttachment(SprintArmComp);
 
 	FirstViewCameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstViewCameraComp"));
-//	FirstViewCameraComp->bUsePawnControlRotation = true;
+	FirstViewCameraComp->bUsePawnControlRotation = true;
 	FirstViewCameraComp->SetupAttachment(RootComponent);
 
 	CurrentViewCameraComp = ThirdViewCameraComp;
@@ -121,10 +121,15 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 FVector ASCharacter::GetPawnViewLocation() const
 {
-	if (ThirdViewCameraComp)
+	if (CurrentViewCameraComp == ThirdViewCameraComp)
 	{
 		return ThirdViewCameraComp->GetComponentLocation();
 	}
+	else
+	{
+		return FirstViewCameraComp->GetComponentLocation();
+	}
+
 	return GetActorLocation() + FVector(0.f,0.f,BaseEyeHeight);
 }
 

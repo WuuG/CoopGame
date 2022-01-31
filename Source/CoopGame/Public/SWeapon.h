@@ -28,7 +28,7 @@ protected:
 	TSubclassOf<UDamageType> DamageType;
 
 	UFUNCTION(BlueprintCallable, Category="Weapon")
-	void Fire();
+	virtual void Fire();
 
 	// Effect
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Weapon")

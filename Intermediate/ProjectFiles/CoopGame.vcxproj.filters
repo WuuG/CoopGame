@@ -3,7 +3,7 @@
   <ItemGroup>
     <None Include="..\..\CoopGame.uproject" />
     <Filter Include="Source">
-      <UniqueIdentifier>{A55E805D-1AF2-4314-8A80-32324DE3D5F2}</UniqueIdentifier>
+      <UniqueIdentifier>{5ED0CF0F-A374-446A-A4A3-596E04C87751}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Source\CoopGame.Target.cs">
       <Filter>Source</Filter>
@@ -14,7 +14,7 @@
     <None Include="..\..\.gitattributes" />
     <None Include="..\..\.gitignore" />
     <Filter Include="Config">
-      <UniqueIdentifier>{B250B99E-9B29-405C-B160-7C7B68859FF6}</UniqueIdentifier>
+      <UniqueIdentifier>{52FBA7B9-73BC-43B8-A3DC-C4F8B253CC0A}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Config\DefaultEditor.ini">
       <Filter>Config</Filter>
@@ -29,7 +29,7 @@
       <Filter>Config</Filter>
     </None>
     <Filter Include="Source\CoopGame">
-      <UniqueIdentifier>{795BC462-8A1C-42C4-B509-BE4D045574F7}</UniqueIdentifier>
+      <UniqueIdentifier>{0742ACEE-DB8A-4D54-AC98-A9CB7D8B64BF}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Source\CoopGame\CoopGame.Build.cs">
       <Filter>Source\CoopGame</Filter>
@@ -47,8 +47,11 @@
       <Filter>Source\CoopGame</Filter>
     </ClInclude>
     <Filter Include="Source\CoopGame\Private">
-      <UniqueIdentifier>{EEC9BB77-B411-4D44-9CFC-C67884C33431}</UniqueIdentifier>
+      <UniqueIdentifier>{B8DD329B-CC7F-4DCD-9F50-EB45048C4029}</UniqueIdentifier>
     </Filter>
+    <ClCompile Include="..\..\Source\CoopGame\Private\GrenadeLaunch.cpp">
+      <Filter>Source\CoopGame\Private</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\CoopGame\Private\SCharacter.cpp">
       <Filter>Source\CoopGame\Private</Filter>
     </ClCompile>
@@ -56,8 +59,11 @@
       <Filter>Source\CoopGame\Private</Filter>
     </ClCompile>
     <Filter Include="Source\CoopGame\Public">
-      <UniqueIdentifier>{2D5685DC-DC79-411B-AF71-17D99D1EF2D1}</UniqueIdentifier>
+      <UniqueIdentifier>{C9C5BC6B-20EB-468C-A9ED-C01C0F9A4C86}</UniqueIdentifier>
     </Filter>
+    <ClInclude Include="..\..\Source\CoopGame\Public\GrenadeLaunch.h">
+      <Filter>Source\CoopGame\Public</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\CoopGame\Public\SCharacter.h">
       <Filter>Source\CoopGame\Public</Filter>
     </ClInclude>

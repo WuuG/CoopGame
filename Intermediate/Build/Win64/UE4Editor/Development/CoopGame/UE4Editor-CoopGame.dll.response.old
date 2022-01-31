@@ -35,11 +35,13 @@
 /FUNCTIONPADMIN
 "D:\UEProjects\CoopGame\Intermediate\Build\Win64\CoopGameEditor\Development\Engine\SharedPCH.Engine.ShadowErrors.h.obj"
 "D:\UEProjects\CoopGame\Intermediate\Build\Win64\UE4Editor\Development\CoopGame\SCharacter.cpp.obj"
+"D:\UEProjects\CoopGame\Intermediate\Build\Win64\UE4Editor\Development\CoopGame\SWeapon.cpp.obj"
 "D:\UEProjects\CoopGame\Intermediate\Build\Win64\UE4Editor\Development\CoopGame\CoopGame.cpp.obj"
 "D:\UEProjects\CoopGame\Intermediate\Build\Win64\UE4Editor\Development\CoopGame\CoopGameGameModeBase.cpp.obj"
 "D:\UEProjects\CoopGame\Intermediate\Build\Win64\UE4Editor\Development\CoopGame\CoopGame.init.gen.cpp.obj"
 "D:\UEProjects\CoopGame\Intermediate\Build\Win64\UE4Editor\Development\CoopGame\CoopGameGameModeBase.gen.cpp.obj"
 "D:\UEProjects\CoopGame\Intermediate\Build\Win64\UE4Editor\Development\CoopGame\SCharacter.gen.cpp.obj"
+"D:\UEProjects\CoopGame\Intermediate\Build\Win64\UE4Editor\Development\CoopGame\SWeapon.gen.cpp.obj"
 "D:\UEProjects\CoopGame\Intermediate\Build\Win64\UE4Editor\Development\CoopGame\Default.rc2.res"
 "D:\Program Files\UE\UE_4.26\Engine\Intermediate\Build\Win64\UE4Editor\Development\Engine\UE4Editor-Engine.lib"
 "D:\Program Files\UE\UE_4.26\Engine\Intermediate\Build\Win64\UE4Editor\Development\Core\UE4Editor-Core.lib"

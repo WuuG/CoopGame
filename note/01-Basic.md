@@ -138,3 +138,21 @@ if(TraceComp)
 + 创建WBP_CrossHair
 + 添加Image
 + 在BP_PlayerPawn中添加该UI
+### Challenge Grenade launch
++ 重写Fire Function
++ 创建一个BP_GrenadeLaunch
++ 创建BP_GrenadeProjectile, 添加Sphere组件，设定速度和抛射(添加ProjectileMovement组件), 模拟物理
++ 修改人物蓝图中所生成的武器
++ 给GrenadeLaunch创建爆炸效果, Add Custon Event,来实现爆炸效果, SpawnE...
++ applyRadialDamage
++ 实现爆炸半径的可视化效果
+``` cpp
+UPROPERTY(EditDefalutOnly, Category="ProjectileWeapon")
+TSubClassOf<Actor> projectileClass;
+```
+``` cpp
+FActorSpawnParametersa SpawnParams;
+SpawnParams.SpawnCollisionHandingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn; // 这里有什么用呢？
+
+GetWorld()->SpawnActor<AActor>(projectileClass, MuzzleLocation, EyeRotation);
+```
