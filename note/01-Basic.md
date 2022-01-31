@@ -51,7 +51,7 @@ void Fire();
 AActor* MyOwner = GetOwner();
 
 FVector EyeLotation;
-FRotation EyeRotation;
+FRotator EyeRotation;
 MyOwner->GetActorEyeViewPoint(EyeLotation, FRotation EyeRotation);
 
 FCollisionQueryParams QueryParams;
@@ -122,7 +122,7 @@ UPROPERTY(VisibleDefaultOnly, BlueprintReadOnly, Category="Weapon")
 FName TracerTargetName;
 ```
 ``` cpp
-#include "Components/SkeletalMeshComponent.h"
+#include "Paticles/ParticleSystemComponent.h"
 
 TracerTArgetName = "Target";
 
@@ -131,7 +131,7 @@ FVector MuzzleLocation = MeshComp->GetSocketLocation(MuzzleSocketName);
 UPaticleSystemComponent* TraceComp =  UGameplayStatics::SpawnEmitterAtLocation(Getworld(),TraceEffect,MuzzleLocation);
 if(TraceComp)
 {
-    TracerComp->SetVectorParamter(TracerTargetName, TraceEndPoint);
+    TracerComp->SetVectorParameter(TracerTargetName, TraceEndPoint);
 }
 ```
 ### 添加Crosshair

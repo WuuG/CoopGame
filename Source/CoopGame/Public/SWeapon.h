@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "SWeapon.generated.h"
 
+class UParticleSystem;
+
 UCLASS()
 class COOPGAME_API ASWeapon : public AActor
 {
@@ -21,10 +23,30 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, Category="Componnets")
 	USkeletalMeshComponent* SkeletaMeshComp;
-	
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Weapon")
+	TSubclassOf<UDamageType> DamageType;
+
+	UFUNCTION(BlueprintCallable, Category="Weapon")
+	void Fire();
+
+	// Effect
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Weapon")
+	FName MuzzleSocketName;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Weapon")
+	UParticleSystem* MuzzleEffect;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Weapon")
+	UParticleSystem* ImpactEffect;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Weapon")
+	UParticleSystem* TraceEffect;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Weapon")
+	FName TraceTargetName;
 
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
 };

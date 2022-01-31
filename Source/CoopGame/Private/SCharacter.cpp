@@ -119,3 +119,12 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAction("SwitchView", IE_Pressed, this, &ASCharacter::SwitchViewFromTwoCamera);
 }
 
+FVector ASCharacter::GetPawnViewLocation() const
+{
+	if (ThirdViewCameraComp)
+	{
+		return ThirdViewCameraComp->GetComponentLocation();
+	}
+	return GetActorLocation() + FVector(0.f,0.f,BaseEyeHeight);
+}
+
