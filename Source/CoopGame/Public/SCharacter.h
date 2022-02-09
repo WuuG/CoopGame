@@ -9,6 +9,7 @@
 class UCameraComponent;
 class USpringArmComponent;
 class UCharacterMovementComponent;
+class ASWeapon;
 
 UCLASS()
 class COOPGAME_API ASCharacter : public ACharacter
@@ -47,6 +48,35 @@ protected:
 
 	UCameraComponent* CurrentViewCameraComp;
 	void SwitchViewFromTwoCamera();
+
+	
+	// CameraZoom AKA Aim
+	bool bWantToZoom;
+	UPROPERTY(EditDefaultsOnly, Category="Zoom")
+	float ZoomedFov;
+	float DefalutFov;
+	UPROPERTY(EditDefaultsOnly, Category="Zoom")
+	float ZoomInterpSpeed;
+
+	void BeginZoom();
+	void EndZoom();
+	void FovZoom(float DeltaTime);
+
+
+	// Weapon
+	UPROPERTY(BlueprintReadWrite, Category="Weapon")
+	ASWeapon* CurrentWeapon;
+
+	UPROPERTY(EditDefaultsOnly, Category="Weapon")
+	TSubclassOf<ASWeapon> StarterWeaponClass;
+
+	UPROPERTY(VisibleAnywhere, Category = "Weapon")
+	FName WeaponAttachSocketName;
+
+	void CreateWeapon();
+	// use weapon Fire Function
+	void Fire();
+
 
 public:	
 	// Called every frame

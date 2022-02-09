@@ -14,8 +14,9 @@ class COOPGAME_API AGrenadeLaunch : public ASWeapon
 {
 	GENERATED_BODY()
 
-	void Fire() override;
-
+protected:
 	UPROPERTY(EditDefaultsOnly, Category="Weapon")
 	TSubclassOf<AActor> ProjectileClass;
+public:
+	void Fire() override;
 };

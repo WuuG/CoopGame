@@ -20,3 +20,8 @@ D:\Program Files\UE\UE_4.26\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine
 D:\Program Files\UE\UE_4.26\Engine\Source\Runtime\Engine\Classes\Particles/Emitter.h
 D:\Program Files\UE\UE_4.26\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\Emitter.generated.h
 D:\Program Files\UE\UE_4.26\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\ParticleSystemComponent.generated.h
+D:\UEProjects\CoopGame\Source\CoopGame/CoopGame.h
+D:\Program Files\UE\UE_4.26\Engine\Source\Runtime\PhysicsCore\Public\PhysicalMaterials/PhysicalMaterial.h
+D:\Program Files\UE\UE_4.26\Engine\Source\Runtime\PhysicsCore\Public\PhysicsSettingsEnums.h
+D:\Program Files\UE\UE_4.26\Engine\Intermediate\Build\Win64\UE4Editor\Inc\PhysicsCore\PhysicsSettingsEnums.generated.h
+D:\Program Files\UE\UE_4.26\Engine\Intermediate\Build\Win64\UE4Editor\Inc\PhysicsCore\PhysicalMaterial.generated.h

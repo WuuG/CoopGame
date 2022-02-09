@@ -7,6 +7,8 @@
 #include "SWeapon.generated.h"
 
 class UParticleSystem;
+class UCameraShakeBase;
+
 
 UCLASS()
 class COOPGAME_API ASWeapon : public AActor
@@ -18,17 +20,11 @@ public:
 	ASWeapon();
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-	
 	UPROPERTY(EditDefaultsOnly, Category="Componnets")
 	USkeletalMeshComponent* SkeletaMeshComp;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Weapon")
 	TSubclassOf<UDamageType> DamageType;
-
-	UFUNCTION(BlueprintCallable, Category="Weapon")
-	virtual void Fire();
 
 	// Effect
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Weapon")
@@ -38,7 +34,10 @@ protected:
 	UParticleSystem* MuzzleEffect;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Weapon")
-	UParticleSystem* ImpactEffect;
+	UParticleSystem* DefalutImpactEffect;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Weapon")
+	UParticleSystem* FleshImpactEffect;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Weapon")
 	UParticleSystem* TraceEffect;
@@ -46,7 +45,17 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Weapon")
 	FName TraceTargetName;
 
+	void PlayMuzzleEffect(FVector TraceEndLocation);
+	void PlayImpactEffect(FHitResult HitResult);
+
+
+	// Camera shake
+	UPROPERTY(EditDefaultsOnly, Category="Weapon")
+	TSubclassOf<UCameraShakeBase> FireCameraShake;
+
+	void PlayCameraShake();
+
 public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	UFUNCTION(BlueprintCallable, Category="Weapon")
+	virtual void Fire();
 };
