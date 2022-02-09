@@ -1,8 +1,0 @@
-{
-	"SourceFiles": [
-		"D:\\UEProjects\\CoopGame\\Source\\CoopGame\\CoopGame.Build.cs",
-		"D:\\UEProjects\\CoopGame\\Source\\CoopGame.Target.cs",
-		"D:\\UEProjects\\CoopGame\\Source\\CoopGameEditor.Target.cs"
-	],
-	"EngineVersion": "4.26.2"
-}
