@@ -119,6 +119,7 @@ switch(SurfaceType)
 ``` cpp
 #define COLLISION_WEAPON ECC_GameTraceChannel1;
 ```
+> 注意，如果有胶囊体的化，Pawn默认情况下会将自定义通道block掉，因此部分身体无法与Mesh Collision， 所以会出现错误的SurfaceType（其实就是胶囊体的SurfaceType）. 因此需要将胶囊体对自定义的block关闭(在这里是Weapon Channel)
 ### 添加爆头特效
 ``` cpp
 float BaseDamage;
@@ -162,7 +163,7 @@ Fire()
 }
 
 float FirstDelay = FMath::Max(LastFireTime + TimeBetweentShots - GetWorld()->TimeSeconds, 0.0f);
-FTimerManager().SetTimer(TimerHandler...)
+GetWorldTimerManager().SetTimer(TimerHandler...)
 
 LastFireTime = GetWorld()->TimeSeconds;
 

@@ -10,6 +10,7 @@ class UCameraComponent;
 class USpringArmComponent;
 class UCharacterMovementComponent;
 class ASWeapon;
+enum EFireMode;
 
 UCLASS()
 class COOPGAME_API ASCharacter : public ACharacter
@@ -75,7 +76,10 @@ protected:
 
 	void CreateWeapon();
 	// use weapon Fire Function
-	void Fire();
+	void StartFire();
+	void StopFire();
+	void SwitchFireMode();
+
 
 
 public:	

@@ -9,6 +9,15 @@
 class UParticleSystem;
 class UCameraShakeBase;
 
+UENUM(BlueprintType)
+namespace EMyEnum
+{
+	enum EFireMode 
+	{
+		SemiAuto,
+		FullyAuto,
+	};
+}
 
 UCLASS()
 class COOPGAME_API ASWeapon : public AActor
@@ -20,6 +29,9 @@ public:
 	ASWeapon();
 
 protected:
+
+	virtual void BeginPlay() override;
+
 	UPROPERTY(EditDefaultsOnly, Category="Componnets")
 	USkeletalMeshComponent* SkeletaMeshComp;
 
@@ -46,7 +58,7 @@ protected:
 	FName TraceTargetName;
 
 	void PlayMuzzleEffect(FVector TraceEndLocation);
-	void PlayImpactEffect(FHitResult HitResult);
+	void PlayImpactEffect(FHitResult HitResult, EPhysicalSurface SurfaceType);
 
 
 	// Camera shake
@@ -55,7 +67,26 @@ protected:
 
 	void PlayCameraShake();
 
-public:	
-	UFUNCTION(BlueprintCallable, Category="Weapon")
+	// Fire
+	UPROPERTY(EditDefaultsOnly, Category="Weapon")
+	float RateOfFire = 500.0f;
+
+	EMyEnum::EFireMode FireMode;
+
+	UPROPERTY(EditDefaultsOnly, Category="Weapon")
+	bool bIsMulFireMode;
+	const float BaseDamage = 20.0f; 
+	float TimeBetweenShots;
+	float LastFireTime;
+	FTimerHandle TimerHandler_TimeBetweenShots;
+
 	virtual void Fire();
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Weapon")
+	void OnFireModeChange(EMyEnum::EFireMode NewFireMode);
+
+public:	
+	void StartFire();
+	void StopFire();
+	void SwitchMode();
 };

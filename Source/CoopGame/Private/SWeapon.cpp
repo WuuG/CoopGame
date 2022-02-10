@@ -9,8 +9,11 @@
 #include "Camera/CameraShake.h"
 #include "CoopGame/CoopGame.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
+#include "TimerManager.h"
 
-static int32 DebugWeaponDrawing = 1;
+using namespace EMyEnum;
+
+static int32 DebugWeaponDrawing = 0;
 FAutoConsoleVariableRef CVARDebugWeaponDrawing(TEXT("COOP.DebugWeapons"), DebugWeaponDrawing, TEXT("Draw Debug Lines for Weapon"), ECVF_Cheat);
 
 // Sets default values
@@ -21,6 +24,19 @@ ASWeapon::ASWeapon()
 
 	MuzzleSocketName = "MuzzleSocket";
 	TraceTargetName = "BeamEnd";
+	
+	bIsMulFireMode = false;
+
+	FireMode = EFireMode::SemiAuto;
+}
+
+void ASWeapon::BeginPlay()
+{
+	Super::BeginPlay();
+	
+	TimeBetweenShots = 60 / RateOfFire;
+	// prevent can't shot when beginplay
+	LastFireTime = -TimeBetweenShots;
 }
 
 void ASWeapon::Fire()
@@ -42,26 +58,82 @@ void ASWeapon::Fire()
 	FHitResult HitResult;
 
 	// is Bolck ?  sign EyeLocation,EndLocation to HirResult TraceStart, TraceEnd
-	bool bIsBlock = GetWorld()->LineTraceSingleByChannel(HitResult, EyeLocation, EndLocation, ECC_Visibility, QueryParams);
+	bool bIsBlock = GetWorld()->LineTraceSingleByChannel(HitResult, EyeLocation, EndLocation, COLLISION_WEAPON, QueryParams);
 	if (bIsBlock)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("SWeapon.cpp TraceLine Get block"));
 		// do some thing when trace blocked
 		FVector ShotDirection = EyeRotation.Vector();
 
+		float ActualDamage = BaseDamage;
+		EPhysicalSurface SurfaceType = UPhysicalMaterial::DetermineSurfaceType(HitResult.PhysMaterial.Get());
+		if (SurfaceType == SURFACE_FLESHVULNERABLE)
+		{
+			ActualDamage *= 2.5;
+		}
 		AActor* HitActor = HitResult.GetActor();
-		UGameplayStatics::ApplyPointDamage(HitActor, 20.0f, ShotDirection, HitResult, MyOwner->GetInstigatorController(), this, DamageType);
-		PlayImpactEffect(HitResult);
+		UGameplayStatics::ApplyPointDamage(HitActor, ActualDamage, ShotDirection, HitResult, MyOwner->GetInstigatorController(), this, DamageType);
+		PlayImpactEffect(HitResult,SurfaceType);
 	}
 
 	FVector	TraceEndLocation = bIsBlock ? HitResult.Location : EndLocation;
 	PlayMuzzleEffect(TraceEndLocation);
+
+	LastFireTime = GetWorld()->TimeSeconds;
 
 	// Debug
 	if (DebugWeaponDrawing > 0)
 	{
 		DrawDebugLine(GetWorld(), EyeLocation, EndLocation, FColor::Red, false, 1.0F);
 	}
+}
+
+void ASWeapon::StartFire()
+{
+	if (FireMode == EFireMode::FullyAuto)
+	{
+		float FirstDelay = FMath::Max(LastFireTime + TimeBetweenShots - GetWorld()->TimeSeconds, 0.0f);
+		GetWorldTimerManager().SetTimer(TimerHandler_TimeBetweenShots, this, &ASWeapon::Fire,TimeBetweenShots, true, FirstDelay);
+	}
+	if (FireMode == EFireMode::SemiAuto)
+	{
+		float FirstDelay = FMath::Max(LastFireTime + TimeBetweenShots - GetWorld()->TimeSeconds, 0.0f);
+		if (FirstDelay > 0)
+		{
+			return;
+		}
+		Fire();
+	}
+}
+
+void ASWeapon::StopFire()
+{
+	if (FireMode == EFireMode::FullyAuto)
+	{
+		GetWorldTimerManager().ClearTimer(TimerHandler_TimeBetweenShots);
+	}
+}
+
+
+void ASWeapon::SwitchMode()
+{
+	if (!bIsMulFireMode)
+	{
+		return;
+	}
+	switch (FireMode)
+	{
+	case EFireMode::SemiAuto:
+		FireMode = EFireMode::FullyAuto;
+		break;
+	case EFireMode::FullyAuto:
+		FireMode = EFireMode::SemiAuto;
+		break;
+	default:
+		FireMode = EFireMode::SemiAuto;
+		break;
+	}
+	OnFireModeChange(FireMode);
 }
 
 void ASWeapon::PlayMuzzleEffect(FVector TraceEndLocation)
@@ -80,9 +152,8 @@ void ASWeapon::PlayMuzzleEffect(FVector TraceEndLocation)
 	}
 }
 
-void ASWeapon::PlayImpactEffect(FHitResult HitResult)
+void ASWeapon::PlayImpactEffect(FHitResult HitResult, EPhysicalSurface SurfaceType)
 {
-	EPhysicalSurface SurfaceType = UPhysicalMaterial::DetermineSurfaceType(HitResult.PhysMaterial.Get());
 	UParticleSystem* selectedEffect = nullptr;
 	switch (SurfaceType)
 	{
@@ -96,7 +167,7 @@ void ASWeapon::PlayImpactEffect(FHitResult HitResult)
 	}
 	if (selectedEffect)
 	{
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), selectedEffect, HitResult.Location, HitResult.ImpactNormal.Rotation());
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), selectedEffect, HitResult.Location, HitResult.ImpactNormal.Rotation());
 	}
 }
 

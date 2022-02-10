@@ -14,9 +14,13 @@ void AGrenadeLaunch::Fire()
 	FRotator EyeRotation;
 	MyOwner->GetActorEyesViewPoint(EyeLocation, EyeRotation);
 	FVector MuzzleLocation = SkeletaMeshComp->GetSocketLocation(MuzzleSocketName);
+	
+	PlayMuzzleEffect(FVector::ZeroVector);
 
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 	GetWorld()->SpawnActor<AActor>(ProjectileClass, MuzzleLocation, EyeRotation, SpawnParams);
+	
+	LastFireTime = GetWorld()->TimeSeconds;
 }
