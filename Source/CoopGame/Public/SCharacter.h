@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "SCharacter.generated.h"
 
+class UCapsuleComponent;
 class UCameraComponent;
 class USpringArmComponent;
 class UCharacterMovementComponent;
@@ -24,6 +25,8 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	UCapsuleComponent* CapsuleComp;
 
 	void MoveForward(float Value);
 	void MoveRight(float Value);

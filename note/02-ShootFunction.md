@@ -169,3 +169,4 @@ LastFireTime = GetWorld()->TimeSeconds;
 
 ```
 ### 自己实现一个关于武器的功能
+实现了切换半自动与全自动的效果。但是若是两个人物，就会出现两个widge。

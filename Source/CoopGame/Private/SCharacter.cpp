@@ -7,6 +7,8 @@
 #include "GameFramework/PawnMovementComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "SWeapon.h"
+#include "Components/CapsuleComponent.h"
+#include "CoopGame/CoopGame.h"
 
 // Sets default values
 ASCharacter::ASCharacter()
@@ -14,6 +16,8 @@ ASCharacter::ASCharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	CapsuleComp = GetCapsuleComponent();
+	CapsuleComp->SetCollisionResponseToChannel(COLLISION_WEAPON, ECR_Ignore);
 
 	// 设置视角组件， 并跟随人物旋转
 	SprintArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("SprintArmComp"));
