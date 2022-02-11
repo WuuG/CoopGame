@@ -12,6 +12,7 @@ class USpringArmComponent;
 class UCharacterMovementComponent;
 class ASWeapon;
 enum EFireMode;
+class USHealthComponent;
 
 UCLASS()
 class COOPGAME_API ASCharacter : public ACharacter
@@ -82,6 +83,16 @@ protected:
 	void StartFire();
 	void StopFire();
 	void SwitchFireMode();
+
+	// Health
+	UPROPERTY(BlueprintReadOnly, Category="Player")
+	bool bDied;
+
+	UPROPERTY(VisibleAnywhere, Category="Player")
+	USHealthComponent* HealthComp;
+
+	UFUNCTION()
+	void OnHealthChanged(USHealthComponent* HealthComponent, float Health, float HealthDelta, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
 
 
 

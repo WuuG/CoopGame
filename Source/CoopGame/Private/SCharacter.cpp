@@ -9,6 +9,7 @@
 #include "SWeapon.h"
 #include "Components/CapsuleComponent.h"
 #include "CoopGame/CoopGame.h"
+#include "Components/SHealthComponent.h"
 
 // Sets default values
 ASCharacter::ASCharacter()
@@ -48,6 +49,9 @@ ASCharacter::ASCharacter()
 	// Weapon
 	WeaponAttachSocketName = "WeaponLocationSocket";
 
+	// Health
+	HealthComp = CreateDefaultSubobject<USHealthComponent>(TEXT("HealthComp"));
+
 }
 
 // Called when the game starts or when spawned
@@ -57,6 +61,8 @@ void ASCharacter::BeginPlay()
 
 	DefalutFov = ThirdViewCameraComp->FieldOfView;
 	CreateWeapon();
+
+	HealthComp->OnHealthChanged.AddDynamic(this, &ASCharacter::OnHealthChanged);
 }
 
 void ASCharacter::MoveForward(float Value)
@@ -164,6 +170,18 @@ void ASCharacter::SwitchFireMode()
 	if (CurrentWeapon)
 	{
 		CurrentWeapon->SwitchMode();
+	}
+}
+
+void ASCharacter::OnHealthChanged(USHealthComponent* HealthComponent, float Health, float HealthDelta, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser)
+{
+	if (Health <= 0 && !bDied)
+	{
+		GetMovementComponent()->StopMovementImmediately();
+		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		DetachFromControllerPendingDestroy();
+		SetLifeSpan(10.0f);
+		bDied = true;
 	}
 }
 

@@ -63,7 +63,7 @@ HealthComp->OnHealthChanged.AddDynamic(this, &AsCharacter::OnHealthChanged)
         GetMovemntComponent()->StopMovementImediately();
         GetCapsuleComponent()->SetCollisionEnable(ECollisionEnabled::NoCollision);
 
-        DetatchFromControllerPendingDestory();
+        DetatchFromControllerPendingDestroy();
         SetLifeSpan(10.0f);
         bDied = true;
     }
@@ -83,5 +83,7 @@ HealthComp->OnHealthChanged.AddDynamic(this, &AsCharacter::OnHealthChanged)
 + 添加Image, 设置位置
 + Apperance/brush 设置材质
 + 添加至viewport
++ 在widge的construct中通过bind Event to On Health CHanged来绑定事件
++ 并通过Get Dynamic Material和Set Scalar Parametes Value来对变量Alpha进行赋值
 ### 创建爆炸桶
 + RadialForceComponent
