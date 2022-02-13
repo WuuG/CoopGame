@@ -10,6 +10,9 @@
 #include "Components/CapsuleComponent.h"
 #include "CoopGame/CoopGame.h"
 #include "Components/SHealthComponent.h"
+#include "Net/UnrealNetwork.h"
+
+
 
 // Sets default values
 ASCharacter::ASCharacter()
@@ -51,6 +54,8 @@ ASCharacter::ASCharacter()
 
 	// Health
 	HealthComp = CreateDefaultSubobject<USHealthComponent>(TEXT("HealthComp"));
+
+	// Multi
 
 }
 
@@ -132,8 +137,7 @@ void ASCharacter::FovZoom(float DeltaTime)
 
 void ASCharacter::CreateWeapon()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Create Weapon"));
-	if (StarterWeaponClass == nullptr)
+	if (StarterWeaponClass == nullptr || GetLocalRole() != ROLE_Authority)
 	{
 		return;
 	}
@@ -141,12 +145,21 @@ void ASCharacter::CreateWeapon()
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	CurrentWeapon =	GetWorld()->SpawnActor<ASWeapon>(StarterWeaponClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
+	
+	// use SpawnActorDeferred instead SpawnActor if we want get Owner or Instigator after beginplay event in CurrentWeapon
+//	CurrentWeapon =	GetWorld()->SpawnActorDeferred<ASWeapon>(StarterWeaponClass, GetTransform(), this,this, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 	if (CurrentWeapon)
 	{
 		CurrentWeapon->SetOwner(this);
+		CurrentWeapon->SetInstigator(this);
 		CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponAttachSocketName);
+		CurrentWeapon->OnWeaponCreated();
 	}
+}
 
+void ASCharacter::OnRep_WeaponChange()
+{
+	CurrentWeapon->OnWeaponCreated();
 }
 
 void ASCharacter::StartFire()
@@ -191,6 +204,13 @@ void ASCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	FovZoom(DeltaTime);
+	if (!IsLocallyControlled())
+	{
+		FRotator NewRot = CurrentViewCameraComp->GetRelativeRotation();
+		NewRot.Pitch = RemoteViewPitch * 360.0f / 255.0f;
+		CurrentViewCameraComp->SetRelativeRotation(NewRot);
+	}
+
 }
 
 // Called to bind functionality to input
@@ -233,3 +253,9 @@ FVector ASCharacter::GetPawnViewLocation() const
 	return GetActorLocation() + FVector(0.f,0.f,BaseEyeHeight);
 }
 
+void ASCharacter::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ASCharacter, CurrentWeapon);
+}

@@ -32,11 +32,9 @@ protected:
 
 	virtual void BeginPlay() override;
 
+	// Mesh
 	UPROPERTY(EditDefaultsOnly, Category="Componnets")
 	USkeletalMeshComponent* SkeletaMeshComp;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Weapon")
-	TSubclassOf<UDamageType> DamageType;
 
 	// Effect
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Weapon")
@@ -68,6 +66,9 @@ protected:
 	void PlayCameraShake();
 
 	// Fire
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Weapon")
+	TSubclassOf<UDamageType> DamageType;
+
 	UPROPERTY(EditDefaultsOnly, Category="Weapon")
 	float RateOfFire = 500.0f;
 
@@ -85,8 +86,14 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Weapon")
 	void OnFireModeChange(EMyEnum::EFireMode NewFireMode);
 
+
+
 public:	
 	void StartFire();
 	void StopFire();
 	void SwitchMode();
+
+	// Created
+	UFUNCTION(BlueprintImplementableEvent, Category = "WeaponEvent")
+	void OnWeaponCreated();
 };

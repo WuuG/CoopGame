@@ -23,6 +23,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	// Mesh and Meterial
 	UPROPERTY(VisibleAnywhere,  Category="Components")
 	UStaticMeshComponent* MeshComp;
 
@@ -32,15 +33,20 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="Metetials")
 	UMaterial* M_Exploded;
 
-	USHealthComponent* HealthComp;
 
+	//FX
 	UPROPERTY(EditDefaultsOnly, Category="FX")
 	UParticleSystem* ExplodeEffect;
 
+	USHealthComponent* HealthComp;
+
 	bool bExpoled;
 	float ExplodeRadius;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Explode")
+	float ExplodeStrength;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Weapon")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Explode")
 	TSubclassOf<UDamageType> ExplodeDamageType;
 
 	UFUNCTION()

@@ -17,6 +17,7 @@ AExplosiveBarrel::AExplosiveBarrel()
 	HealthComp = CreateDefaultSubobject<USHealthComponent>(TEXT("HealthComp"));
 
 	ExplodeRadius = 500.0f;
+	ExplodeStrength = 1000.0f;
 }
 
 // Called when the game starts or when spawned
@@ -43,7 +44,8 @@ void AExplosiveBarrel::Explode()
 {
 	bExpoled = true;
 	MeshComp->SetMaterial(0, M_Exploded);
-	MeshComp->AddImpulse(((FVector)(0, 0, 1000)));
+	FVector UpImpulse = FVector::UpVector * ExplodeStrength;
+	MeshComp->AddImpulse(UpImpulse);
 	if (ExplodeEffect)
 	{
 		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExplodeEffect, GetActorLocation(), FRotator::ZeroRotator, ((FVector)((3.0f))));
@@ -68,7 +70,7 @@ void AExplosiveBarrel::Explode()
 			UPrimitiveComponent* HitPrimComp = Hit.GetComponent();
 			if (HitPrimComp)
 			{
-				HitPrimComp->AddRadialImpulse(BarrelLocation, 500.0f, 2000.0f, ERadialImpulseFalloff::RIF_Constant, true);
+				HitPrimComp->AddRadialImpulse(BarrelLocation, 500.0f, ExplodeStrength, ERadialImpulseFalloff::RIF_Constant, true);
 			}
 		}
 	}

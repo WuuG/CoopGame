@@ -69,7 +69,7 @@ protected:
 
 
 	// Weapon
-	UPROPERTY(BlueprintReadWrite, Category="Weapon")
+	UPROPERTY(ReplicatedUsing=OnRep_WeaponChange ,VisibleAnywhere,BlueprintReadWrite, Category="Weapon")
 	ASWeapon* CurrentWeapon;
 
 	UPROPERTY(EditDefaultsOnly, Category="Weapon")
@@ -79,6 +79,10 @@ protected:
 	FName WeaponAttachSocketName;
 
 	void CreateWeapon();
+
+	UFUNCTION()
+	void OnRep_WeaponChange();
+
 	// use weapon Fire Function
 	void StartFire();
 	void StopFire();

@@ -28,6 +28,8 @@ ASWeapon::ASWeapon()
 	bIsMulFireMode = false;
 
 	FireMode = EFireMode::SemiAuto;
+
+	SetReplicates(true);
 }
 
 void ASWeapon::BeginPlay()
@@ -44,6 +46,10 @@ void ASWeapon::Fire()
 	PlayCameraShake();
 
 	AActor* MyOwner = GetOwner();
+	if (!MyOwner)
+	{
+		return;
+	}
 	FVector EyeLocation;
 	FRotator EyeRotation;
 	MyOwner->GetActorEyesViewPoint(EyeLocation, EyeRotation);
