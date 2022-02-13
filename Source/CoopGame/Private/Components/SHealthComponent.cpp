@@ -2,11 +2,14 @@
 
 
 #include "Components/SHealthComponent.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values for this component's properties
 USHealthComponent::USHealthComponent()
 {
 	DefalutHealth = 100;
+
+	SetIsReplicatedByDefault(true);
 }
 
 
@@ -15,13 +18,17 @@ void USHealthComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (GetOwnerRole() < ROLE_Authority)
+	{
+		return;
+	}
+
 	AActor* MyOwner = GetOwner();
 	if (MyOwner)
 	{
 		Health = DefalutHealth;
 		MyOwner->OnTakeAnyDamage.AddDynamic(this, &USHealthComponent::HandleTakeAnyDamage);
 	}
-	
 }
 
 void USHealthComponent::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser)
@@ -34,6 +41,22 @@ void USHealthComponent::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, 
 
 	UE_LOG(LogTemp, Warning, TEXT("Health Change: %s"), *FString::SanitizeFloat(Health));
 
+	DamageInfo.Damage	 = Damage;
+	DamageInfo.DamageType = DamageType;
+	DamageInfo.InstigatedBy = InstigatedBy;
+	DamageInfo.DamageCauser = DamageCauser;
+
 	OnHealthChanged.Broadcast(this, Health, Damage, DamageType, InstigatedBy, DamageCauser);
 }
 
+void USHealthComponent::OnRep_HealthChange()
+{
+	OnHealthChanged.Broadcast(this, Health,DamageInfo.Damage ,DamageInfo.DamageType, DamageInfo.InstigatedBy,DamageInfo.DamageCauser);
+}
+
+void USHealthComponent::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	
+	DOREPLIFETIME(USHealthComponent, Health);
+}

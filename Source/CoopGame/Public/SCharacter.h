@@ -89,10 +89,10 @@ protected:
 	void SwitchFireMode();
 
 	// Health
-	UPROPERTY(BlueprintReadOnly, Category="Player")
+	UPROPERTY(Replicated,BlueprintReadOnly, Category="Player")
 	bool bDied;
 
-	UPROPERTY(VisibleAnywhere, Category="Player")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly,Category="Player")
 	USHealthComponent* HealthComp;
 
 	UFUNCTION()

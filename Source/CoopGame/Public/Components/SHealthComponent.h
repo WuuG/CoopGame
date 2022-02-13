@@ -8,6 +8,18 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_SixParams(FOnHealthChangedSignature, USHealthComponent*, HealthComp, float, Health, float, HealthDelta, const class UDamageType*, DamageType, class AController*, InstigatedBy, AActor*, DamageCauser);
 
+USTRUCT()
+struct FDamageInfo
+{
+	GENERATED_BODY()
+
+public:
+	float Damage;
+	const class UDamageType* DamageType;
+	class AController* InstigatedBy;
+	AActor* DamageCauser;
+};
+
 UCLASS( ClassGroup=(COOP), meta=(BlueprintSpawnableComponent) )
 class COOPGAME_API USHealthComponent : public UActorComponent
 {
@@ -21,7 +33,7 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-	UPROPERTY(BlueprintReadOnly, Category="Player")
+	UPROPERTY(Replicated,BlueprintReadOnly, Category="Player", ReplicatedUsing=OnRep_HealthChange)
 	float Health;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Player")
@@ -29,6 +41,12 @@ protected:
 
 	UFUNCTION()
 	void HandleTakeAnyDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
+
+	UFUNCTION()
+	void OnRep_HealthChange();
+
+	FDamageInfo DamageInfo;
+
 public:	
 
 	UPROPERTY(BlueprintAssignable, Category="Events")

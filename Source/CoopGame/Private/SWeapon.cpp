@@ -99,8 +99,6 @@ void ASWeapon::Fire()
 	{
 		HitScanTrace.TraceEnd = TraceEndLocation;
 		HitScanTrace.SurfaceType = SurfaceType;
-		HitScanTrace.TraceEnd = FVector::ZeroVector;
-		HitScanTrace.SurfaceType = SurfaceType_Max;
 	}
 	HitScanTrace.TraceEnd = TraceEndLocation;
 	PlayMuzzleEffect(TraceEndLocation);
