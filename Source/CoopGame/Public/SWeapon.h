@@ -12,12 +12,24 @@ class UCameraShakeBase;
 UENUM(BlueprintType)
 namespace EMyEnum
 {
-	enum EFireMode 
+	enum EFireMode
 	{
 		SemiAuto,
 		FullyAuto,
 	};
 }
+
+USTRUCT()
+struct FHitScanTrace
+{
+	GENERATED_BODY()
+public:
+	UPROPERTY()
+		TEnumAsByte<EPhysicalSurface> SurfaceType;
+
+	UPROPERTY()
+		FVector_NetQuantize TraceEnd;
+};
 
 UCLASS()
 class COOPGAME_API ASWeapon : public AActor
@@ -56,7 +68,7 @@ protected:
 	FName TraceTargetName;
 
 	void PlayMuzzleEffect(FVector TraceEndLocation);
-	void PlayImpactEffect(FHitResult HitResult, EPhysicalSurface SurfaceType);
+	void PlayImpactEffect(FVector ImpactLocation, EPhysicalSurface SurfaceType);
 
 
 	// Camera shake
@@ -86,7 +98,18 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Weapon")
 	void OnFireModeChange(EMyEnum::EFireMode NewFireMode);
 
+	/*
+	* NetWork
+	*/
+	// Fire
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerFire();
 
+	UPROPERTY(ReplicatedUsing=OnRep_HitScanTrace)
+	FHitScanTrace HitScanTrace;
+
+	UFUNCTION()
+	void OnRep_HitScanTrace();
 
 public:	
 	void StartFire();

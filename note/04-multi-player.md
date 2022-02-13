@@ -67,13 +67,13 @@ struct FhitScanTrace
     GENERATED_BODY()
 
 public:
-    // 该类型的矢量不那么精确，但是网络传输的数据量更小
     UPEORPETY()
     // FVector_NetQuantizeNormal TraceFrom;
     TEnumAsByte<EPhysicalSurface> SurfaceType; // 不可以直接传入结构，需要以字节传入才可以在网络端进行传播
 
+    // 该类型的矢量不那么精确，但是网络传输的数据量更小
     UPROERPTY()
-    FVector_NetQuantizeNormal TraceEnd;
+    FVector_NetQuantize TraceEnd;
 }
 
     // 该数据更新时触发函数 OnRep_HitScanTrace
@@ -109,6 +109,7 @@ GetLifetimeReplicatedProps()
     DOREPLIFETIME_CONDITION(ASWEAPON, HitScanTrace, COND_SkipOwner):
 }
 ```
+> 这个修改完，在服务器射击同一位置时客户端无法触发OnRep_HitScanTrace()函数
 ### 复制生命值组件
 ``` cpp
 UPROPERTY(Replicated,...)

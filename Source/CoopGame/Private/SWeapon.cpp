@@ -10,6 +10,7 @@
 #include "CoopGame/CoopGame.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
 #include "TimerManager.h"
+#include "Net/UnrealNetwork.h"
 
 using namespace EMyEnum;
 
@@ -30,6 +31,9 @@ ASWeapon::ASWeapon()
 	FireMode = EFireMode::SemiAuto;
 
 	SetReplicates(true);
+
+	NetUpdateFrequency = 66.0f;
+	MinNetUpdateFrequency = 33.0f;
 }
 
 void ASWeapon::BeginPlay()
@@ -44,7 +48,13 @@ void ASWeapon::BeginPlay()
 void ASWeapon::Fire()
 {
 	PlayCameraShake();
-
+	
+	// Client
+	if (GetLocalRole() < ROLE_Authority)
+	{
+		ServerFire();
+	}
+	// Server
 	AActor* MyOwner = GetOwner();
 	if (!MyOwner)
 	{
@@ -53,7 +63,7 @@ void ASWeapon::Fire()
 	FVector EyeLocation;
 	FRotator EyeRotation;
 	MyOwner->GetActorEyesViewPoint(EyeLocation, EyeRotation);
-	FVector EndLocation = EyeLocation + EyeRotation.Vector() * 10000;
+	FVector EndLocation = EyeLocation + EyeRotation.Vector() * 1000000;
 
 	FCollisionQueryParams QueryParams;
 	QueryParams.AddIgnoredActor(MyOwner);
@@ -62,6 +72,7 @@ void ASWeapon::Fire()
 	QueryParams.bReturnPhysicalMaterial = true;
 
 	FHitResult HitResult;
+	EPhysicalSurface SurfaceType = SurfaceType_Default;
 
 	// is Bolck ?  sign EyeLocation,EndLocation to HirResult TraceStart, TraceEnd
 	bool bIsBlock = GetWorld()->LineTraceSingleByChannel(HitResult, EyeLocation, EndLocation, COLLISION_WEAPON, QueryParams);
@@ -72,17 +83,26 @@ void ASWeapon::Fire()
 		FVector ShotDirection = EyeRotation.Vector();
 
 		float ActualDamage = BaseDamage;
-		EPhysicalSurface SurfaceType = UPhysicalMaterial::DetermineSurfaceType(HitResult.PhysMaterial.Get());
+		SurfaceType = UPhysicalMaterial::DetermineSurfaceType(HitResult.PhysMaterial.Get());
 		if (SurfaceType == SURFACE_FLESHVULNERABLE)
 		{
 			ActualDamage *= 2.5;
 		}
 		AActor* HitActor = HitResult.GetActor();
 		UGameplayStatics::ApplyPointDamage(HitActor, ActualDamage, ShotDirection, HitResult, MyOwner->GetInstigatorController(), this, DamageType);
-		PlayImpactEffect(HitResult,SurfaceType);
+		PlayImpactEffect(HitResult.ImpactPoint,SurfaceType);
 	}
 
 	FVector	TraceEndLocation = bIsBlock ? HitResult.Location : EndLocation;
+	// 只有服务端需要改变， 因为在服务端,客户端的开火效果都能直接通过ServerFire()查看到. 而服务端的则通过这个值的改变来触发函数进行调用
+	if (GetLocalRole() == ROLE_Authority)
+	{
+		HitScanTrace.TraceEnd = TraceEndLocation;
+		HitScanTrace.SurfaceType = SurfaceType;
+		HitScanTrace.TraceEnd = FVector::ZeroVector;
+		HitScanTrace.SurfaceType = SurfaceType_Max;
+	}
+	HitScanTrace.TraceEnd = TraceEndLocation;
 	PlayMuzzleEffect(TraceEndLocation);
 
 	LastFireTime = GetWorld()->TimeSeconds;
@@ -92,6 +112,23 @@ void ASWeapon::Fire()
 	{
 		DrawDebugLine(GetWorld(), EyeLocation, EndLocation, FColor::Red, false, 1.0F);
 	}
+}
+
+// 虽然完成了同步，但是射击同一个位置的话，因为值没有改变所以无法触发这个函数
+void ASWeapon::OnRep_HitScanTrace()
+{
+	PlayMuzzleEffect(HitScanTrace.TraceEnd);
+	PlayImpactEffect(HitScanTrace.TraceEnd,HitScanTrace.SurfaceType);
+}
+
+void ASWeapon::ServerFire_Implementation()
+{
+	Fire();
+}
+
+bool ASWeapon::ServerFire_Validate()
+{
+	return true;
 }
 
 void ASWeapon::StartFire()
@@ -158,7 +195,7 @@ void ASWeapon::PlayMuzzleEffect(FVector TraceEndLocation)
 	}
 }
 
-void ASWeapon::PlayImpactEffect(FHitResult HitResult, EPhysicalSurface SurfaceType)
+void ASWeapon::PlayImpactEffect(FVector ImpactLocation, EPhysicalSurface SurfaceType)
 {
 	UParticleSystem* selectedEffect = nullptr;
 	switch (SurfaceType)
@@ -173,7 +210,7 @@ void ASWeapon::PlayImpactEffect(FHitResult HitResult, EPhysicalSurface SurfaceTy
 	}
 	if (selectedEffect)
 	{
-	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), selectedEffect, HitResult.Location, HitResult.ImpactNormal.Rotation());
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), selectedEffect, ImpactLocation, FRotator::ZeroRotator);
 	}
 }
 
@@ -191,3 +228,9 @@ void ASWeapon::PlayCameraShake()
 	}
 }
 
+void ASWeapon::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME_CONDITION(ASWeapon, HitScanTrace, COND_SkipOwner);
+}
