@@ -54,6 +54,11 @@ void USHealthComponent::OnRep_HealthChange()
 	OnHealthChanged.Broadcast(this, Health,DamageInfo.Damage ,DamageInfo.DamageType, DamageInfo.InstigatedBy,DamageInfo.DamageCauser);
 }
 
+float USHealthComponent::GetHealth()
+{
+	return Health;
+}
+
 void USHealthComponent::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);

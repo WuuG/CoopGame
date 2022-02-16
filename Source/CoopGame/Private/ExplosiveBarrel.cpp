@@ -7,17 +7,23 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "DrawDebugHelpers.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 AExplosiveBarrel::AExplosiveBarrel()
 {
 	MeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComp"));
+	MeshComp->SetSimulatePhysics(true);
+	MeshComp->SetCollisionObjectType(ECollisionChannel::ECC_PhysicsBody);
 	RootComponent = MeshComp;
 
 	HealthComp = CreateDefaultSubobject<USHealthComponent>(TEXT("HealthComp"));
 
 	ExplodeRadius = 500.0f;
 	ExplodeStrength = 1000.0f;
+
+	SetReplicates(true);
+	SetReplicateMovement(true);
 }
 
 // Called when the game starts or when spawned
@@ -40,16 +46,29 @@ void AExplosiveBarrel::OnBarrelHealthChanged(USHealthComponent* HealthComponent,
 	}
 }
 
-void AExplosiveBarrel::Explode()
+void AExplosiveBarrel::PlayExplodeEffect()
 {
-	bExpoled = true;
 	MeshComp->SetMaterial(0, M_Exploded);
-	FVector UpImpulse = FVector::UpVector * ExplodeStrength;
-	MeshComp->AddImpulse(UpImpulse);
 	if (ExplodeEffect)
 	{
 		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExplodeEffect, GetActorLocation(), FRotator::ZeroRotator, ((FVector)((3.0f))));
 	}
+}
+
+void AExplosiveBarrel::Explode()
+{
+
+	// Client
+	if (GetLocalRole() < ROLE_Authority)
+	{
+		Server_Explode();
+		return;
+	}
+	// Server
+	bExpoled = true;
+	PlayExplodeEffect();
+	FVector UpImpulse = FVector::UpVector * ExplodeStrength;
+	MeshComp->AddImpulse(UpImpulse);
 	TArray<FHitResult> OutHits;
 	TArray<AActor*> IgnoreActors;
 	IgnoreActors.Push(this);
@@ -76,3 +95,29 @@ void AExplosiveBarrel::Explode()
 	}
 }
 
+void AExplosiveBarrel::OnRep_Exploded()
+{	
+	if (HealthComp->GetHealth() <= 0 && bExpoled)
+	{
+		PlayExplodeEffect();
+	}
+}
+
+void AExplosiveBarrel::Server_Explode_Implementation()
+{
+	Explode();
+}
+
+bool AExplosiveBarrel::Server_Explode_Validate()
+{
+	return true;
+}
+
+
+
+void AExplosiveBarrel::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AExplosiveBarrel, bExpoled);
+}

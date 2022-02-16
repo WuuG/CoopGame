@@ -50,6 +50,11 @@ protected:
 	float WalkSpeed;
 	float RunSpeed;
 
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_BeginRun();
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_EndRun();
+
 
 	UCameraComponent* CurrentViewCameraComp;
 	void SwitchViewFromTwoCamera();

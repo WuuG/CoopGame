@@ -92,15 +92,43 @@ void ASCharacter::EndCrouch()
 
 void ASCharacter::BeginRun()
 {
+	if (GetLocalRole() < ROLE_Authority)
+	{
+		Server_BeginRun();
+	}
 	CharacterMovementComp->MaxWalkSpeed = RunSpeed;
 }
 
 void ASCharacter::EndRun()
 {
+	if (GetLocalRole() < ROLE_Authority)
+	{
+		Server_EndRun();
+	}
 	CharacterMovementComp->MaxWalkSpeed = WalkSpeed;
 }
 
 
+
+void ASCharacter::Server_BeginRun_Implementation()
+{
+	CharacterMovementComp->MaxWalkSpeed = RunSpeed;
+}
+
+bool ASCharacter::Server_BeginRun_Validate()
+{
+	return true;
+}
+
+void ASCharacter::Server_EndRun_Implementation()
+{
+	CharacterMovementComp->MaxWalkSpeed = WalkSpeed;
+}
+
+bool ASCharacter::Server_EndRun_Validate()
+{
+	return true;
+}
 
 void ASCharacter::SwitchViewFromTwoCamera()
 {

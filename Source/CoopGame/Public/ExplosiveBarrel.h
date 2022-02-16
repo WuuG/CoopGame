@@ -40,6 +40,7 @@ protected:
 
 	USHealthComponent* HealthComp;
 
+	UPROPERTY(ReplicatedUsing=OnRep_Exploded, VisibleInstanceOnly,Category="Explode")
 	bool bExpoled;
 	float ExplodeRadius;
 	
@@ -52,9 +53,14 @@ protected:
 	UFUNCTION()
 	void OnBarrelHealthChanged(USHealthComponent* HealthComponent, float Health, float HealthDelta, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
 
+	void PlayExplodeEffect();
+
 	void Explode();
 
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_Explode();
 
-
+	UFUNCTION()
+	void OnRep_Exploded();
 
 };
