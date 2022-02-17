@@ -67,6 +67,8 @@ void AExplosiveBarrel::Explode()
 	// Server
 	bExpoled = true;
 	PlayExplodeEffect();
+
+	// UpImpilse
 	FVector UpImpulse = FVector::UpVector * ExplodeStrength;
 	MeshComp->AddImpulse(UpImpulse);
 	TArray<FHitResult> OutHits;
@@ -75,6 +77,8 @@ void AExplosiveBarrel::Explode()
 	FVector BarrelLocation = GetActorLocation();
 	FVector StartLocation = BarrelLocation;
 	FVector EndLocation = BarrelLocation;
+
+	// Radius impulse
 	FCollisionShape ExplodeShpere = FCollisionShape::MakeSphere(ExplodeRadius);
 
 	DrawDebugSphere(GetWorld(), BarrelLocation, ExplodeShpere.GetSphereRadius(),20, FColor::Cyan, false,2.0f);
