@@ -21,7 +21,7 @@ ASTrackerBot::ASTrackerBot()
 	MeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComp"));
 	MeshComp->SetCanEverAffectNavigation(false);
 	MeshComp->SetSimulatePhysics(true);
-	MeshComp->SetupAttachment(RootComponent);
+	RootComponent = MeshComp;
 
 	HealtComp = CreateDefaultSubobject<USHealthComponent>(TEXT("HealthComp"));
 
@@ -91,13 +91,20 @@ void ASTrackerBot::SelfDestruct()
 	{
 		return;
 	}
+	bExploded = true;
+
 	PlayExplosionEffect();
+	SetFakeDestruct();
+
+	if (GetLocalRole() < ROLE_Authority)
+	{
+		return;
+	}
 	TArray<AActor*> IgnoreActors;
 	IgnoreActors.Add(this);
-
 	UGameplayStatics::ApplyRadialDamage(this, ExplosionDamage, GetActorLocation(), ExplosionRadius, nullptr, IgnoreActors, this,nullptr, ExplosionFullDamage);
+
 	DrawDebugSphere(GetWorld(), GetActorLocation(), ExplosionRadius, 32, FColor::Red, false, 2.0f);
-	Destroy();
 }
 
 void ASTrackerBot::PlayExplosionEffect()
@@ -111,13 +118,31 @@ void ASTrackerBot::PlayExplosionEffect()
 
 void ASTrackerBot::DamageSelf()
 {
+	if (GetLocalRole() < ROLE_Authority)
+	{
+		return;
+	}
 	UGameplayStatics::ApplyDamage(this, SelfDestructDamage, nullptr, this, nullptr);
+}
+
+void ASTrackerBot::SetFakeDestruct()
+{
+	MeshComp->SetVisibility(false, true);
+	MeshComp->SetSimulatePhysics(false);
+	MeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	SphereComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	SetLifeSpan(2.0f);
 }
 
 // Called every frame
 void ASTrackerBot::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (bExploded)
+	{
+		return;
+	}
 
 	float DistanceToTarget =(NextPathPoint - GetActorLocation()).Size();
 	if (DistanceToTarget <= DistanceOfFindPath)
@@ -133,12 +158,13 @@ void ASTrackerBot::Tick(float DeltaTime)
 		MeshComp->AddForce(ForceDirection, NAME_None,bUseVelocityChange);
 		DrawDebugDirectionalArrow(GetWorld(), GetActorLocation(), NextPathPoint, 12, FColor::Yellow);
 	}
-	DrawDebugSphere(GetWorld(), NextPathPoint, 20.0f, 32, FColor::Green);
+
+//	DrawDebugSphere(GetWorld(), NextPathPoint, 20.0f, 32, FColor::Green);
 }
 
 void ASTrackerBot::NotifyActorBeginOverlap(AActor* OtherActor)
 {
-	if (bStartSelfDestructed)
+	if (bStartSelfDestructed || bExploded)
 	{
 		return;
 	}

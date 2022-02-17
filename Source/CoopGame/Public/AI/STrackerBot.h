@@ -81,6 +81,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="Sounds")
 	USoundCue* ExplodeSound;
 
+	//NetWork
+	void SetFakeDestruct();
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

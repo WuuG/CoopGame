@@ -182,6 +182,7 @@ UGameplayStatics::SpawnSoundAttached(SelfDestructSound, RootComponent);
 + 多人模式下客户端没有Nav Mesh, 所以会崩溃
 + 将爆炸效果留在本地，其他在服务端上执行
 ``` cpp
+// 一种方法, 我使用另一种
 UPROPERTY(..., ReplicatedUsing=OnRep_Health)
 float Health;
 
