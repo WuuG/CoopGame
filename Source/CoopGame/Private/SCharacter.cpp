@@ -42,8 +42,7 @@ ASCharacter::ASCharacter()
 	
 	// Run Action
 	CharacterMovementComp = GetCharacterMovement();
-	WalkSpeed = 300.0f;
-	RunSpeed = 600.0f;
+	RunMagnification = 2;
 
 	// Zoom
 	ZoomedFov = 50.0f;
@@ -96,7 +95,7 @@ void ASCharacter::BeginRun()
 	{
 		Server_BeginRun();
 	}
-	CharacterMovementComp->MaxWalkSpeed = RunSpeed;
+	CharacterMovementComp->MaxWalkSpeed *= RunMagnification;
 }
 
 void ASCharacter::EndRun()
@@ -105,14 +104,14 @@ void ASCharacter::EndRun()
 	{
 		Server_EndRun();
 	}
-	CharacterMovementComp->MaxWalkSpeed = WalkSpeed;
+	CharacterMovementComp->MaxWalkSpeed /= RunMagnification;
 }
 
 
 
 void ASCharacter::Server_BeginRun_Implementation()
 {
-	CharacterMovementComp->MaxWalkSpeed = RunSpeed;
+	CharacterMovementComp->MaxWalkSpeed *= RunMagnification;
 }
 
 bool ASCharacter::Server_BeginRun_Validate()
@@ -122,7 +121,7 @@ bool ASCharacter::Server_BeginRun_Validate()
 
 void ASCharacter::Server_EndRun_Implementation()
 {
-	CharacterMovementComp->MaxWalkSpeed = WalkSpeed;
+	CharacterMovementComp->MaxWalkSpeed /= RunMagnification;
 }
 
 bool ASCharacter::Server_EndRun_Validate()

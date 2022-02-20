@@ -44,11 +44,13 @@ protected:
 	void BeginCrouch();
 	void EndCrouch();
 
+	// Run
 	UCharacterMovementComponent* CharacterMovementComp;
 	void BeginRun();
 	void EndRun();
-	float WalkSpeed;
-	float RunSpeed;
+
+	UPROPERTY(EditDefaultsOnly, Category="Run")
+	float RunMagnification;
 
 	UFUNCTION(Server, Reliable, WithValidation)
 	void Server_BeginRun();
