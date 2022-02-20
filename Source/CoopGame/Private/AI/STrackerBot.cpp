@@ -11,6 +11,7 @@
 #include "Components/SHealthComponent.h"
 #include "Components/SphereComponent.h"
 #include "Sound/SoundCue.h"
+#include "SCharacter.h"
 
 // Sets default values
 ASTrackerBot::ASTrackerBot()
@@ -28,7 +29,9 @@ ASTrackerBot::ASTrackerBot()
 	SphereComp = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComp"));
 	SphereComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	SphereComp->SetCollisionResponseToAllChannels(ECR_Ignore);
+	SphereComp->SetCollisionObjectType(ECollisionChannel::ECC_PhysicsBody);
 	SphereComp->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+	SphereComp->SetCollisionResponseToChannel(ECC_PhysicsBody, ECR_Overlap);
 	SphereRaius = 200.0f;
 	SphereComp->SetSphereRadius(SphereRaius);
 	SphereComp->SetupAttachment(MeshComp);
@@ -37,6 +40,7 @@ ASTrackerBot::ASTrackerBot()
 	DistanceOfFindPath = 100.0f;
 	bUseVelocityChange = true;
 
+	// Explosion and StarteSelfDesturct
 	bExploded = false;
 	bStartSelfDestructed = false;
 	ExplosionDamage = 50.0f;
@@ -44,6 +48,10 @@ ASTrackerBot::ASTrackerBot()
 	ExplosionFullDamage = true;
 	SelfDestructDamage = 20.0f;
 	DamageSelfInterval = 1;
+
+	// Nearby Companions
+	MaxPowerLevel = 5;
+	PowerLevel = 0;
 }
 
 // Called when the game starts or when spawned
@@ -102,7 +110,9 @@ void ASTrackerBot::SelfDestruct()
 	}
 	TArray<AActor*> IgnoreActors;
 	IgnoreActors.Add(this);
-	UGameplayStatics::ApplyRadialDamage(this, ExplosionDamage, GetActorLocation(), ExplosionRadius, nullptr, IgnoreActors, this,nullptr, ExplosionFullDamage);
+	float ActualDamage = ExplosionDamage + ExplosionDamage * PowerLevel;
+	UE_LOG(LogTemp, Log, TEXT("TrackerBot.cpp ActualDamage: %s"), *FString::SanitizeFloat(ActualDamage));
+	UGameplayStatics::ApplyRadialDamage(this, ActualDamage, GetActorLocation(), ExplosionRadius, nullptr, IgnoreActors, this,nullptr, ExplosionFullDamage);
 
 	DrawDebugSphere(GetWorld(), GetActorLocation(), ExplosionRadius, 32, FColor::Red, false, 2.0f);
 }
@@ -164,12 +174,55 @@ void ASTrackerBot::Tick(float DeltaTime)
 
 void ASTrackerBot::NotifyActorBeginOverlap(AActor* OtherActor)
 {
-	if (bStartSelfDestructed || bExploded)
+	Super::NotifyActorBeginOverlap(OtherActor);
+
+	ASCharacter* PlayerPawn = Cast<ASCharacter>(OtherActor);
+	if (PlayerPawn)
 	{
-		return;
+		if (bStartSelfDestructed || bExploded)
+		{
+			return;
+		}
+		UGameplayStatics::SpawnSoundAttached(SelfDestructSound, RootComponent);
+		GetWorldTimerManager().SetTimer(TimerHandler_StartSelfConstruct,this,&ASTrackerBot::DamageSelf,DamageSelfInterval, true, 0.0f);
+		bStartSelfDestructed = true;
 	}
-	UGameplayStatics::SpawnSoundAttached(SelfDestructSound, RootComponent);
-	GetWorldTimerManager().SetTimer(TimerHandler_StartSelfConstruct,this,&ASTrackerBot::DamageSelf,DamageSelfInterval, true, 0.0f);
-	bStartSelfDestructed = true;
+	ASTrackerBot* OtherTrackerBot = Cast<ASTrackerBot>(OtherActor);
+	if (OtherTrackerBot)
+	{
+		PowerLevel++;
+		PowerLevel = FMath::Min(PowerLevel, MaxPowerLevel);
+		UE_LOG(LogTemp, Warning, TEXT("PowerLevel %s"), *FString::SanitizeFloat(PowerLevel));
+		float Alpha = FMath::Clamp(PowerLevel / float(MaxPowerLevel), 0.0f, 1.0f);
+		if (MatInst == nullptr)
+		{
+			MatInst = MeshComp->CreateAndSetMaterialInstanceDynamicFromMaterial(0, MeshComp->GetMaterial(0));
+		}
+		if (MatInst)
+		{
+			MatInst->SetScalarParameterValue("PowerLevelAlpha", Alpha);
+		}
+	}
 }
+
+void ASTrackerBot::NotifyActorEndOverlap(AActor* OtherActor)
+{
+	ASTrackerBot* OtherTrackerBot = Cast<ASTrackerBot>(OtherActor);
+	if (OtherTrackerBot)
+	{
+		PowerLevel--;
+		UE_LOG(LogTemp, Warning, TEXT("PowerLevel %s"), *FString::SanitizeFloat(PowerLevel));
+		PowerLevel = PowerLevel ? PowerLevel : 0;
+		float Alpha = FMath::Clamp(PowerLevel / float(MaxPowerLevel), 0.0f, 1.0f);
+		if (MatInst == nullptr)
+		{
+			MatInst = MeshComp->CreateAndSetMaterialInstanceDynamicFromMaterial(0, MeshComp->GetMaterial(0));
+		}
+		if (MatInst)
+		{
+			MatInst->SetScalarParameterValue("PowerLevelAlpha", Alpha);
+		}
+	}
+}
+
 

@@ -195,3 +195,8 @@ MeshComp->SetCollisionEnabled(...);
 
 GetIifeSPan(2.0f);
 ```
+## Challenge
++ 根据同伴数量造成不同伤害
++ PowerLevel, PowerLevelAphoa(for Material)
++ float Alpha = PowerLevel / (float) MaxPowerLevel
+> 通过NotifyActorBeginOverlap和NotifyActorEndOverlap实现，应该也是可以的，但是会比较麻烦。 主要是爆炸瞬间会使得overlap消失，导致PowerLevel归零，而使得爆炸伤害无改变. 并且该方案还与爆炸使用同一Sphere Coliision，比较糟糕。不过通过延迟之类的，应该也可以实现该效果，但是该方案并不好。

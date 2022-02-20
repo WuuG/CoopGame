@@ -81,6 +81,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="Sounds")
 	USoundCue* ExplodeSound;
 
+	// nearby Companions
+	UPROPERTY(EditDefaultsOnly, Category="Sounds")
+	int32 MaxPowerLevel;
+	int32 PowerLevel;
+
+
 	//NetWork
 	void SetFakeDestruct();
 
@@ -90,4 +96,5 @@ public:
 
 	void NotifyActorBeginOverlap(AActor* OtherActor) override;
 
+	void NotifyActorEndOverlap(AActor* OtherActor) override;
 };
