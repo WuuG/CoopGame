@@ -31,7 +31,6 @@ ASTrackerBot::ASTrackerBot()
 	SphereComp->SetCollisionResponseToAllChannels(ECR_Ignore);
 	SphereComp->SetCollisionObjectType(ECollisionChannel::ECC_PhysicsBody);
 	SphereComp->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
-	SphereComp->SetCollisionResponseToChannel(ECC_PhysicsBody, ECR_Overlap);
 	SphereRaius = 200.0f;
 	SphereComp->SetSphereRadius(SphereRaius);
 	SphereComp->SetupAttachment(MeshComp);
@@ -52,6 +51,7 @@ ASTrackerBot::ASTrackerBot()
 	// Nearby Companions
 	MaxPowerLevel = 5;
 	PowerLevel = 0;
+	CollShapeRadius = 600.0f;
 }
 
 // Called when the game starts or when spawned
@@ -61,6 +61,9 @@ void ASTrackerBot::BeginPlay()
 
 	NextPathPoint = GetNextPathPoint();
 	HealtComp->OnHealthChanged.AddDynamic(this, &ASTrackerBot::HandleTakeDamage);
+
+	FTimerHandle TimerHandler_OnOverlapTrackerBot;
+	GetWorldTimerManager().SetTimer(TimerHandler_OnOverlapTrackerBot, this, &ASTrackerBot::OnOverlapTrackerBot, 1.0f, true , 0.0f);
 }
 
 FVector ASTrackerBot::GetNextPathPoint()
@@ -135,13 +138,49 @@ void ASTrackerBot::DamageSelf()
 	UGameplayStatics::ApplyDamage(this, SelfDestructDamage, nullptr, this, nullptr);
 }
 
+void ASTrackerBot::OnOverlapTrackerBot()
+{
+	FCollisionShape CollShape;
+	CollShape.SetSphere(CollShapeRadius);
+
+	FCollisionObjectQueryParams QueryParams;
+	QueryParams.AddObjectTypesToQuery(ECC_PhysicsBody);
+	
+	TArray<FOverlapResult> OutOverlaps;
+	GetWorld()->OverlapMultiByObjectType(OutOverlaps, GetActorLocation(),FQuat::Identity, QueryParams, CollShape);
+
+	PowerLevel = 0;
+	for (FOverlapResult OverlapResult : OutOverlaps)
+	{
+		ASTrackerBot* TrackerBot = Cast<ASTrackerBot>(OverlapResult.GetActor());
+		if (TrackerBot && TrackerBot != this)
+		{
+			PowerLevel++;
+		}
+	}
+	PowerLevel = FMath::Clamp(PowerLevel, 0, MaxPowerLevel);
+
+//	UE_LOG(LogTemp, Log, TEXT("TrackerBot.cpp PowerLevel: %s"), *FString::SanitizeFloat(PowerLevel));
+
+	// for impluse Effect
+	float PowerLevelAlpha = PowerLevel / float(MaxPowerLevel);
+	if (MatInst == nullptr)
+	{
+		MatInst = MeshComp->CreateAndSetMaterialInstanceDynamicFromMaterial(0, MeshComp->GetMaterial(0));
+	}
+	if (MatInst)
+	{
+		MatInst->SetScalarParameterValue("PowerLevelAlpha", PowerLevelAlpha);
+	}
+}
+
 void ASTrackerBot::SetFakeDestruct()
 {
 	MeshComp->SetVisibility(false, true);
 	MeshComp->SetSimulatePhysics(false);
 	MeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	SphereComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	SetLifeSpan(2.0f);
+	SetLifeSpan(1.0f);
 }
 
 // Called every frame
@@ -187,42 +226,4 @@ void ASTrackerBot::NotifyActorBeginOverlap(AActor* OtherActor)
 		GetWorldTimerManager().SetTimer(TimerHandler_StartSelfConstruct,this,&ASTrackerBot::DamageSelf,DamageSelfInterval, true, 0.0f);
 		bStartSelfDestructed = true;
 	}
-	ASTrackerBot* OtherTrackerBot = Cast<ASTrackerBot>(OtherActor);
-	if (OtherTrackerBot)
-	{
-		PowerLevel++;
-		PowerLevel = FMath::Min(PowerLevel, MaxPowerLevel);
-		UE_LOG(LogTemp, Warning, TEXT("PowerLevel %s"), *FString::SanitizeFloat(PowerLevel));
-		float Alpha = FMath::Clamp(PowerLevel / float(MaxPowerLevel), 0.0f, 1.0f);
-		if (MatInst == nullptr)
-		{
-			MatInst = MeshComp->CreateAndSetMaterialInstanceDynamicFromMaterial(0, MeshComp->GetMaterial(0));
-		}
-		if (MatInst)
-		{
-			MatInst->SetScalarParameterValue("PowerLevelAlpha", Alpha);
-		}
-	}
 }
-
-void ASTrackerBot::NotifyActorEndOverlap(AActor* OtherActor)
-{
-	ASTrackerBot* OtherTrackerBot = Cast<ASTrackerBot>(OtherActor);
-	if (OtherTrackerBot)
-	{
-		PowerLevel--;
-		UE_LOG(LogTemp, Warning, TEXT("PowerLevel %s"), *FString::SanitizeFloat(PowerLevel));
-		PowerLevel = PowerLevel ? PowerLevel : 0;
-		float Alpha = FMath::Clamp(PowerLevel / float(MaxPowerLevel), 0.0f, 1.0f);
-		if (MatInst == nullptr)
-		{
-			MatInst = MeshComp->CreateAndSetMaterialInstanceDynamicFromMaterial(0, MeshComp->GetMaterial(0));
-		}
-		if (MatInst)
-		{
-			MatInst->SetScalarParameterValue("PowerLevelAlpha", Alpha);
-		}
-	}
-}
-
-

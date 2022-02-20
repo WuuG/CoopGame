@@ -82,9 +82,13 @@ protected:
 	USoundCue* ExplodeSound;
 
 	// nearby Companions
-	UPROPERTY(EditDefaultsOnly, Category="Sounds")
+	UPROPERTY(EditDefaultsOnly, Category="TrackerBot")
 	int32 MaxPowerLevel;
 	int32 PowerLevel;
+	UPROPERTY(EditDefaultsOnly, Category = "TrackerBot")
+	float CollShapeRadius;
+
+	void OnOverlapTrackerBot();
 
 
 	//NetWork
@@ -95,6 +99,4 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	void NotifyActorBeginOverlap(AActor* OtherActor) override;
-
-	void NotifyActorEndOverlap(AActor* OtherActor) override;
 };
