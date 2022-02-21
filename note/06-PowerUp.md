@@ -133,4 +133,4 @@ OnPowerupActiveChanged();
 > Parent to Expired
 ### Powerup_HealthRegen
 + Get All Actors of Class, ForEachLoop
-+ ActivatePowerup(AActor* OtherActor), 使其能够判断是哪个角色及逆行了overlap
++ ActivatePowerup(AActor* OtherActor), 使其能够判断是哪个角色overlap了

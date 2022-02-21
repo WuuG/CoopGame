@@ -22,6 +22,8 @@ ASPickUpActor::ASPickUpActor()
 	DecalComp->SetupAttachment(RootComponent);
 
 	CoolDownDuration = 10.0f;
+
+	SetReplicates(true);
 }
 
 // Called when the game starts or when spawned
@@ -34,8 +36,7 @@ void ASPickUpActor::BeginPlay()
 
 void ASPickUpActor::Respawn()
 {
-
-	if (PowerUpActorClass)
+	if (GetLocalRole() == ROLE_Authority && PowerUpActorClass)
 	{
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
@@ -45,7 +46,10 @@ void ASPickUpActor::Respawn()
 
 void ASPickUpActor::NotifyActorBeginOverlap(AActor* OtherActor)
 {
-	if (PowerUpInst)
+	Super::NotifyActorBeginOverlap(OtherActor);
+
+	// still can't execute code when Role != ROLE_Authority, Because PowerUpInst is nullptr
+	if (PowerUpInst && GetLocalRole() == ROLE_Authority)
 	{
 		PowerUpInst->ActivatePowerup(OtherActor);
 		PowerUpInst = nullptr;

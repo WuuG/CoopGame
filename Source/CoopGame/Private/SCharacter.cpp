@@ -53,9 +53,6 @@ ASCharacter::ASCharacter()
 
 	// Health
 	HealthComp = CreateDefaultSubobject<USHealthComponent>(TEXT("HealthComp"));
-
-	// Multi
-
 }
 
 // Called when the game starts or when spawned

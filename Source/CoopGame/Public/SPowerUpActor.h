@@ -32,6 +32,18 @@ public:
 	UFUNCTION(BlueprintImplementableEvent,BlueprintCallable, Category="PowerUps")
 	void OnHideMesh();
 
+	UPROPERTY(ReplicatedUsing=OnRep_PowerUpActive)
+	bool bIsPowerUpActive;
+
+	UFUNCTION()
+	void OnRep_PowerUpActive();
+
+	UFUNCTION(BlueprintImplementableEvent,BlueprintCallable, Category="PowerUps")
+	void OnClientActivated();
+
+	UFUNCTION(BlueprintImplementableEvent,BlueprintCallable, Category="PowerUps")
+	void OnClientExpired();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
