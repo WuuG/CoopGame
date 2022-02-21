@@ -11,6 +11,8 @@ ASPowerUpActor::ASPowerUpActor()
 	PowerUpInterval = 10.0f;
 	TotalNrOfTicks = 1;
 	TickProcessed = 0;
+
+	SetReplicates(true);
 }
 
 void ASPowerUpActor::OnTickPowerUp()
@@ -33,6 +35,10 @@ void ASPowerUpActor::BeginPlay()
 
 void ASPowerUpActor::ActivatePowerup(AActor* OtherActor)
 {
+	if (GetLocalRole() < ROLE_Authority)
+	{
+		return;
+	}
 	OnActivated(OtherActor);
 
 	if (PowerUpInterval > 0)
