@@ -89,4 +89,48 @@ void Respawn();
     powerUpInstance = nullptr;
     // Set Timer to Respwan
 ```
-创建M_Powerup
++ 创建M_Powerup, 创建base color
++ 以此创建MI_PowerUpSpeed实例，进行修改
++ 添加LightPoint，关闭Cast Shadows,修改灯光颜色, 并创建LightFunction M_PowerupLightFunction
+![LightFunction](index_files/06-3-PowerLightFunction.png)
+> 连接到Emitter Color
+
++ 将M_Powerup 改为Unlit,使其不受光照影响
+![M_PowerUp](index_files/06-4-Powerup.png)
+## Health ReGeneration
++ 新建PowerUp_HealthRegen
+
+HealthComp
+``` cpp
+UFUNCTION(BlueprintCallable, Category="HealthComp")
+void Heal(float HealAmount);
+```
+### Polish
++ MI_PowerupHealth, 将M_Powerup的Color提升为变量，使其能够在Instance中进行改变
++ Rotating movement component 可以将道具移动起来
+## 多人模式
+``` cpp
+UPROPERTY(ReplicatedUsing=OnRep_powerupActive)
+bool bIsPowerupActive;
+
+UFUNCTION()
+void OnRep_PowerupActive();
+
+UFUNCTION(BlueprintCallable)
+void OnPowerupActiveChanged(bool bNewIsActive);
+```
+``` cpp
+// OnRep_PowerupActive
+OnPowerupActiveChanged();
+// ActivatePowerup()
+    bIsPowerupActive = true;
+    OnRep_PowerupActive();
+
+// GetLifetimeReplicatedProps
+```
+### Powerups base class
++ 创建 BP_PowerupBase
+> Parent to Expired
+### Powerup_HealthRegen
++ Get All Actors of Class, ForEachLoop
++ ActivatePowerup(AActor* OtherActor), 使其能够判断是哪个角色及逆行了overlap

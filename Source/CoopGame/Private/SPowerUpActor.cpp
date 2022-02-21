@@ -3,6 +3,8 @@
 
 #include "SPowerUpActor.h"
 
+class AActor;
+
 // Sets default values
 ASPowerUpActor::ASPowerUpActor()
 {
@@ -29,9 +31,9 @@ void ASPowerUpActor::BeginPlay()
 	
 }
 
-void ASPowerUpActor::ActivatePowerup()
+void ASPowerUpActor::ActivatePowerup(AActor* OtherActor)
 {
-	OnActivated();
+	OnActivated(OtherActor);
 
 	if (PowerUpInterval > 0)
 	{

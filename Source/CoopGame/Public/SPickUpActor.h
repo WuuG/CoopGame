@@ -29,12 +29,12 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category="Components")
 	UDecalComponent* DecalComp;
 
-	UPROPERTY(EditDefaultsOnly, Category="PickUpActor")
+	UPROPERTY(EditInstanceOnly, Category="PickUpActor")
 	TSubclassOf<ASPowerUpActor> PowerUpActorClass;
 
 	ASPowerUpActor* PowerUpInst;
 
-	UPROPERTY(EditDefaultsOnly, Category="PickUpActor")
+	UPROPERTY(EditInstanceOnly, Category="PickUpActor")
 	float CoolDownDuration;
 	
 	void Respawn();

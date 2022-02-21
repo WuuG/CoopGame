@@ -47,7 +47,7 @@ void ASPickUpActor::NotifyActorBeginOverlap(AActor* OtherActor)
 {
 	if (PowerUpInst)
 	{
-		PowerUpInst->ActivatePowerup();
+		PowerUpInst->ActivatePowerup(OtherActor);
 		PowerUpInst = nullptr;
 		FTimerHandle TimerHandle_RespawnTimer;
 		GetWorldTimerManager().SetTimer(TimerHandle_RespawnTimer, this, &ASPickUpActor::Respawn, CoolDownDuration);

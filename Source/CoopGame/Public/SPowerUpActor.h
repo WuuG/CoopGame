@@ -1,5 +1,4 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -30,16 +29,19 @@ public:
 	UFUNCTION()
 	void OnTickPowerUp();
 
+	UFUNCTION(BlueprintImplementableEvent,BlueprintCallable, Category="PowerUps")
+	void OnHideMesh();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 public:	
-	void ActivatePowerup();
+	void ActivatePowerup(AActor* OtherActor);
 
 	/* event for Execute power up effect */
 	UFUNCTION(BlueprintImplementableEvent, Category="PowerUps")
-	void OnActivated();
+	void OnActivated(AActor* OtherActor);
 
 	UFUNCTION(BlueprintImplementableEvent, Category="PowerUps")
 	void OnPowerUpTicked();
