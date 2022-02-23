@@ -3,6 +3,7 @@
 
 #include "SGameMode.h"
 #include "Components/SHealthComponent.h"
+#include "SGameState.h"
 
 ASGameMode::ASGameMode()
 {
@@ -16,6 +17,8 @@ ASGameMode::ASGameMode()
 
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.TickInterval = 1.0f;
+
+	GameStateClass = ASGameState::StaticClass();
 }
 
 void ASGameMode::StartWave()
@@ -23,16 +26,19 @@ void ASGameMode::StartWave()
 	WaveCount++;
 	NrOfBotsToSpawn = NrOfBaseSpawn * WaveCount;
 
+	SetWaveState(EWaveState::WaveInProgress);
 	GetWorldTimerManager().SetTimer(TimerHandle_BotSpawner, this, &ASGameMode::SpawnBotTimerElaped, TimeBetweenSpawn, true, 0.0f);
 }
 
 void ASGameMode::EndWave()
 {
+	SetWaveState(EWaveState::WaveComplete);
 	GetWorldTimerManager().ClearTimer(TimerHandle_BotSpawner);
 }
 
 void ASGameMode::PrepareNextWave()
 {
+	SetWaveState(EWaveState::WatingToStart);
 	GetWorldTimerManager().SetTimer(TimerHandle_PrepareSpawn, this, &ASGameMode::StartWave, TimeBetweenWaves);
 }
 
@@ -53,7 +59,6 @@ void ASGameMode::CheckWaveState()
 	bool bIsPreparingNextWave = GetWorldTimerManager().IsTimerActive(TimerHandle_PrepareSpawn);
 	if (bIsPreparingNextWave || NrOfBotsToSpawn > 0)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("not prepare"));
 		return;
 	}
 
@@ -76,13 +81,16 @@ void ASGameMode::CheckWaveState()
 	{
 		PrepareNextWave();
 	}
-	UE_LOG(LogTemp, Warning, TEXT("at least one bot alive!"));
 }
 
-void ASGameMode::StartPlay()
+void ASGameMode::SetWaveState(EWaveState NewState)
 {
-	Super::StartPlay();
-
+	ASGameState* GS = GetGameState<ASGameState>();
+	if (ensureAlways(GS))
+	{
+		GS->WaveState = NewState;
+		GS->OnRep_WaveState(NewState);
+	}
 }
 
 void ASGameMode::Tick(float DeltaTime)
