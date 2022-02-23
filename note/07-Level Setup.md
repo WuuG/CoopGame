@@ -324,7 +324,7 @@ HandleTakeDamage()
     }
 }
 ```
-> beginPlay Assign Event to Add Score(注意杀死玩家不加分的), 同时可以试试为什么不可以用蓝图实现的事件来完成下面的过程。
+> beginPlay Assign Event to Add Score(注意杀死玩家不加分的), 同时可以试试为什么不可以用蓝图实现的事件来完成下面的过程(实际上在这个功能上也可以直接使用蓝图事件实现，奇怪了)。
 ### Respawn Death player
 GameMode
 ``` cpp

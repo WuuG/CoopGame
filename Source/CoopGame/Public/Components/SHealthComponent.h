@@ -36,6 +36,8 @@ protected:
 	UPROPERTY(Replicated,BlueprintReadOnly, Category="Player", ReplicatedUsing=OnRep_HealthChange)
 	float Health;
 
+	bool bIsDead;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Player")
 	float DefalutHealth;
 

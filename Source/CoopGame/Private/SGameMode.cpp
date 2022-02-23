@@ -4,6 +4,7 @@
 #include "SGameMode.h"
 #include "Components/SHealthComponent.h"
 #include "SGameState.h"
+#include "SPlayerState.h"
 
 ASGameMode::ASGameMode()
 {
@@ -19,6 +20,7 @@ ASGameMode::ASGameMode()
 	PrimaryActorTick.TickInterval = 1.0f;
 
 	GameStateClass = ASGameState::StaticClass();
+	PlayerStateClass = ASPlayerState::StaticClass();
 }
 
 void ASGameMode::StartWave()
@@ -94,10 +96,23 @@ void ASGameMode::SetWaveState(EWaveState NewState)
 	}
 }
 
+void ASGameMode::RestartDeadPlayer()
+{
+	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator();It; ++It)
+	{
+		APlayerController* PC = It->Get();
+		if (PC && PC->GetPawn() == nullptr)
+		{
+			RestartPlayer(PC);
+		}
+	}
+}
+
 void ASGameMode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
 	CheckWaveState();
+	RestartDeadPlayer();
 }
 
