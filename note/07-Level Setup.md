@@ -24,6 +24,9 @@
 + 新建一个蓝图 EnvQueryContext_AllPlayers : EnQueryContext_BlueprintBase
 + 在该蓝图中Get All Actors of Class, Actor Class = SCharacter
 + 设置EQS_FindSpawnLocation中distance中的类为EnvQueryContext_AllPlayers, 并设置好距离
+> 其中两个 EnQueryContext_BlueprintBase都是用于寻找位置的，一个寻找玩家位置，一个寻找TargetPoint位置。  
+> EQS_FindSpawnLocation利用寻找到的位置进行计算，来确定生成位置和概率。
+> EQSTestingPawn用于显示EQS_FindSpawnLocation计算出的结果
 ## Spawn AI Using EQS
 + Bind Event to OnQueryFinishedEvent
 + Switch on EEnvQueryStatus
