@@ -14,8 +14,8 @@ namespace EMyEnum
 {
 	enum EFireMode
 	{
-		SemiAuto,
-		FullyAuto,
+		SemiAuto = 0 UMETA(DisplayName="SemiAuto"),
+		FullyAuto = 10 UMETA(DisplayName="FullyAuto"),
 	};
 }
 

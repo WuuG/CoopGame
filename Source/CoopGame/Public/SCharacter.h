@@ -90,10 +90,6 @@ protected:
 	UFUNCTION()
 	void OnRep_WeaponChange();
 
-	// use weapon Fire Function
-	void StartFire();
-	void StopFire();
-	void SwitchFireMode();
 
 	// Health
 	UPROPERTY(Replicated,BlueprintReadOnly, Category="Player")
@@ -108,6 +104,14 @@ protected:
 
 
 public:	
+	// use weapon Fire Function
+	UFUNCTION(BlueprintCallable, Category="Player")
+	void SwitchFireMode();
+	UFUNCTION(BlueprintCallable, Category="Player")
+	void StartFire();
+	UFUNCTION(BlueprintCallable, Category="Player")
+	void StopFire();
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -115,4 +119,5 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	FVector GetPawnViewLocation() const override;
+
 };
